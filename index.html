@@ -645,8 +645,19 @@ function renderPractices(){
 
   var grid=document.getElementById('practicesGrid');grid.innerHTML='';
   practices.forEach(function(p,idx){
-    var show=currentMoodFilter==='all'||p.mood==='all'||p.mood===currentMoodFilter;
-    var card=document.createElement('div');card.className='practice-card'+(show?'':' dimmed');card.style.animationDelay=(idx*.06)+'s';
+    // Determine visibility: when a specific mood filter is active, only show practices that match that mood
+    var show;
+    if(currentMoodFilter==='all'){
+      show=true;
+    } else if(currentMoodFilter==='stable'){
+      // Stable filter: show stable-tagged and all-tagged practices
+      show=(p.mood==='stable'||p.mood==='all');
+    } else {
+      // Manic or Depressed: only show practices specifically tagged for that mood
+      show=(p.mood===currentMoodFilter);
+    }
+    if(!show)return; // skip entirely — don't render the card at all
+    var card=document.createElement('div');card.className='practice-card';card.style.animationDelay=(idx*.06)+'s';
     var badgesHtml=p.badges.map(function(b,i){return'<span class="practice-badge '+p.badgeClass[i]+'">'+b+'</span>'}).join('');
     var iconHtml=practiceIcons[p.icon]||'';
     card.innerHTML='<div class="practice-header"><div class="practice-icon">'+iconHtml+'</div><div class="practice-title">'+p.title+'</div></div><div class="practice-desc">'+p.description+'</div><div class="practice-footer"><div class="practice-badges">'+badgesHtml+'</div></div>';
