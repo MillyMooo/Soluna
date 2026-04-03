@@ -24,9 +24,11 @@
   .header-greeting{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:26px;color:var(--navy);line-height:1.2;text-align:center}
   .header-date{font-weight:300;font-size:12px;color:var(--text-light);margin-top:3px;letter-spacing:.3px;text-align:center;padding-bottom:18px}
 
-  /* SVG wave — path morphs (SMIL); tilt from deviceorientation on waveDivider */
-  .wave-divider{position:relative;z-index:2;margin-top:-1px;line-height:0;flex-shrink:0;overflow:hidden;transform-origin:50% 100%;transform-style:preserve-3d;will-change:transform;backface-visibility:hidden}
-  .wave-divider .wave-svg{display:block;width:100%;height:auto}
+  /* Wave: clip overflow so oversized tilted layer never shows past screen edges */
+  .wave-tilt-wrap{position:relative;z-index:2;margin-top:-1px;flex-shrink:0;width:100%;overflow:hidden;line-height:0;background:var(--sand)}
+  /* Wider than viewport — when 3D-tilted, corners still reach left/right; negative margin centers bleed */
+  .wave-divider{position:relative;width:118%;margin-left:-9%;transform-origin:50% 100%;transform-style:preserve-3d;will-change:transform;backface-visibility:hidden}
+  .wave-divider .wave-svg{display:block;width:100%;height:auto;vertical-align:top}
 
   /* ═══ PAGE CONTENT ═══ */
   .page-content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:1;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
@@ -240,7 +242,8 @@
     <div class="header-date" id="dateDisplay"></div>
   </div>
 
-  <!-- ═══ WAVE DIVIDER (curve morphs via SMIL — same command count per keyframe) ═══ -->
+  <!-- ═══ WAVE DIVIDER (curve morphs via SMIL; wrap clips bleed from 3D tilt) ═══ -->
+  <div class="wave-tilt-wrap">
   <div class="wave-divider" id="waveDivider">
     <svg class="wave-svg" viewBox="0 0 430 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path fill="#FDF8F4">
@@ -262,6 +265,7 @@
                   M0,16 Q55,32 110,20 Q180,6 250,18 Q320,30 390,14 Q415,8 430,12 L430,32 L0,32 Z"/>
       </path>
     </svg>
+  </div>
   </div>
 
   <!-- ═══ REFLECT ═══ -->
@@ -401,7 +405,10 @@ document.getElementById('dateDisplay').textContent=now.toLocaleDateString('en-GB
   function frame(){
     curRx+=(targetRx-curRx)*smooth;
     curRz+=(targetRz-curRz)*smooth;
-    el.style.transform='perspective(900px) rotateX('+curRx.toFixed(2)+'deg) rotateZ('+curRz.toFixed(2)+'deg)';
+    var rxRad=curRx*Math.PI/180;
+    var cover=1.06/Math.max(0.92,Math.cos(rxRad));
+    if(cover>1.18)cover=1.18;
+    el.style.transform='perspective(900px) rotateX('+curRx.toFixed(2)+'deg) rotateZ('+curRz.toFixed(2)+'deg) scale3d('+cover.toFixed(4)+','+cover.toFixed(4)+',1)';
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
