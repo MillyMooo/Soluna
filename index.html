@@ -391,7 +391,7 @@ var now=new Date(),hour=now.getHours(),greet=hour<12?'Good morning':hour<17?'Goo
 document.getElementById('greeting').textContent=greet;
 document.getElementById('dateDisplay').textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
 
-// ═══ WAVE TILT (device orientation) ═══
+// ═══ WAVE TILT — “cup of water”: surface stays level with gravity, so it tilts *opposite* to the phone ═══
 (function(){
   var el=document.getElementById('waveDivider');
   if(!el)return;
@@ -399,8 +399,8 @@ document.getElementById('dateDisplay').textContent=now.toLocaleDateString('en-GB
   var smooth=0.14;
   function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
   function onOrient(e){
-    if(e.gamma!=null&&!isNaN(e.gamma))targetRz=clamp(e.gamma*0.11,-11,11);
-    if(e.beta!=null&&!isNaN(e.beta))targetRx=clamp((e.beta-90)*0.065,-5,5);
+    if(e.gamma!=null&&!isNaN(e.gamma))targetRz=clamp(-e.gamma*0.11,-11,11);
+    if(e.beta!=null&&!isNaN(e.beta))targetRx=clamp(-(e.beta-90)*0.065,-5,5);
   }
   function frame(){
     curRx+=(targetRx-curRx)*smooth;
