@@ -118,10 +118,14 @@
 
   /* ═══ PRACTICES PAGE ═══ */
   .practices-page{padding:8px 0 110px}
-  .mood-filter{display:flex;gap:8px;margin:0 20px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .practices-filter-hint{font-weight:300;font-size:11px;color:var(--text-light);line-height:1.45;margin:0 20px 10px;padding:10px 14px;border-radius:var(--radius-sm);background:rgba(14,137,146,0.07);border:1px solid rgba(140,182,188,0.2)}
+  .practices-filter-hint[hidden]{display:none}
+  .mood-filter{display:flex;gap:8px;margin:0 20px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scroll-padding:0 12px;padding-bottom:6px;touch-action:pan-x}
   .mood-filter::-webkit-scrollbar{display:none}
-  .filter-btn{padding:8px 16px;border-radius:var(--radius-pill);border:1.5px solid rgba(140,182,188,0.2);background:rgba(255,255,255,0.4);font-family:'Outfit',sans-serif;font-weight:300;font-size:11px;color:var(--text-light);cursor:pointer;white-space:nowrap;transition:all .3s ease;flex-shrink:0}
-  .filter-btn.active{border-color:var(--teal);background:rgba(14,137,146,0.1);color:var(--teal);font-weight:400}
+  .filter-btn{padding:9px 16px;border-radius:var(--radius-pill);border:1.5px solid rgba(140,182,188,0.2);background:rgba(255,255,255,0.4);font-family:'Outfit',sans-serif;font-weight:300;font-size:11px;color:var(--text-light);cursor:pointer;white-space:nowrap;transition:background .25s ease,border-color .25s ease,color .25s ease,box-shadow .25s ease;flex-shrink:0;scroll-snap-align:start;-webkit-tap-highlight-color:transparent}
+  .filter-btn:hover{border-color:rgba(14,137,146,0.35)}
+  .filter-btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .filter-btn.active{border-color:var(--teal);background:rgba(14,137,146,0.12);color:var(--teal);font-weight:500;box-shadow:0 2px 10px rgba(14,137,146,0.12)}
   .practices-grid{display:flex;flex-direction:column;gap:12px;padding:0 20px}
   .practice-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px 20px;box-shadow:0 4px 24px var(--glass-shadow);transition:all .3s ease;animation:cardIn .4s ease both}
   .practice-card.dimmed{opacity:.35;pointer-events:none}
@@ -282,6 +286,7 @@
     .insights-page .glass-card:nth-child(4){grid-column:1/-1}
     /* Practices: two columns */
     .practices-page{padding:16px 40px 40px;max-width:1100px;margin:0 auto}
+    .practices-filter-hint{margin-left:0;margin-right:0}
     .practices-page>.glass-card:first-child{margin-bottom:8px}
     .mood-filter{margin-left:0;margin-right:0;flex-wrap:wrap;overflow:visible;padding-bottom:4px}
     .practices-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:0}
@@ -390,8 +395,9 @@
 
   <!-- ═══ PRACTICES ═══ -->
   <div class="page-content" id="pagePractices" style="display:none"><div class="page active practices-page">
-    <div class="glass-card" style="margin-bottom:12px"><div class="card-label">Guided Practices</div><div class="card-subtitle">Evidence-based techniques for self-regulation. Filtered to your current mood state when available.</div></div>
-    <div class="mood-filter" id="moodFilter"></div>
+    <div class="glass-card" style="margin-bottom:12px"><div class="card-label">Guided Practices</div><div class="card-subtitle">Evidence-based techniques for self-regulation. After a check-in, we match practices to your logged mood; use the tabs to browse everything.</div></div>
+    <p class="practices-filter-hint" id="practicesFilterHint" hidden></p>
+    <div class="mood-filter" id="moodFilter" role="tablist" aria-label="Filter practices by mood"></div>
     <div class="practices-grid" id="practicesGrid"></div>
     <div style="height:16px"></div>
   </div></div>
@@ -444,8 +450,8 @@
   </div>
 
   <!-- ═══ NAV (4 tabs) ═══ -->
-  <nav class="nav-bar">
-    <div class="nav-item active" data-page="reflect" onclick="switchPage('reflect')">
+  <nav class="nav-bar" role="navigation" aria-label="Main">
+    <div class="nav-item active" data-page="reflect" onclick="switchPage('reflect')" aria-current="page">
       <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
       <span class="nav-label">Reflect</span><div class="nav-dot"></div>
     </div>
@@ -545,13 +551,13 @@ function startQuestions(){var qf=document.getElementById('questionFlow');qf.styl
 function renderQ(){var q=questions[curQ],prog=document.getElementById('qProgress');prog.innerHTML='';questions.forEach(function(_,i){var d=document.createElement('div');d.className='progress-dot'+(i<curQ?' filled':'')+(i===curQ?' current':'');prog.appendChild(d)});document.getElementById('qLabel').textContent=q.label;document.getElementById('qNum').textContent='Question '+q.num+' of 6';document.getElementById('qText').textContent=q.text;var o=document.getElementById('qOpts');o.innerHTML='';q.options.forEach(function(opt){var p=document.createElement('div');p.className='q-pill'+(qAns[q.key]===opt.letter?' selected':'');p.innerHTML='<span class="q-letter" style="background:'+opt.bg+'">'+opt.letter+'</span><span class="q-pill-text">'+opt.text+'</span>';p.addEventListener('click',function(){o.querySelectorAll('.q-pill').forEach(function(x){x.classList.remove('selected')});p.classList.add('selected');qAns[q.key]=opt.letter;document.getElementById('qNext').classList.add('enabled')});o.appendChild(p)});document.getElementById('qBack').style.visibility=curQ===0?'hidden':'visible';var nb=document.getElementById('qNext');nb.textContent=curQ===questions.length-1?'Finish':'Next';nb.classList.toggle('enabled',!!qAns[q.key]);var card=document.getElementById('qCard');card.style.animation='none';card.offsetHeight;card.style.animation='cardIn .35s ease both'}
 function nextQ(){if(!qAns[questions[curQ].key])return;if(curQ<questions.length-1){curQ++;renderQ()}else showComp()}
 function prevQ(){if(curQ>0){curQ--;renderQ()}else{document.getElementById('questionFlow').style.display='none';setReflectPhase('orb')}}
-function showComp(){document.getElementById('questionFlow').style.display='none';var c=document.getElementById('compView');c.style.display='flex';c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .6s ease both';setReflectPhase('complete');var msgs=['Thank you for checking in. Every reflection is a small act of self-care.','You showed up for yourself today. That matters more than you might think.','There are no wrong answers here — only honest ones. Well done.','Noticing how you feel is the first step towards understanding your patterns.'];document.getElementById('compText').textContent=msgs[Math.floor(Math.random()*msgs.length)]}
+function showComp(){document.getElementById('questionFlow').style.display='none';var c=document.getElementById('compView');c.style.display='flex';c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .6s ease both';setReflectPhase('complete');if(selectedMood)setStoredLastMood(selectedMood);practicesFilterManual=false;var msgs=['Thank you for checking in. Every reflection is a small act of self-care.','You showed up for yourself today. That matters more than you might think.','There are no wrong answers here — only honest ones. Well done.','Noticing how you feel is the first step towards understanding your patterns.'];document.getElementById('compText').textContent=msgs[Math.floor(Math.random()*msgs.length)]}
 function resetAll(){document.getElementById('compView').style.display='none';setReflectPhase('orb');selectedMood=null;Object.keys(qAns).forEach(function(k){delete qAns[k]});curQ=0;document.querySelectorAll('.state-label').forEach(function(l){l.classList.remove('active')});document.getElementById('selectedName').style.opacity='0';document.getElementById('selectedDesc').style.opacity='0';document.getElementById('continueBtn').classList.remove('visible');orbEl.style.transition='all .5s ease';orbEl.style.left='50%';orbEl.style.top='50%';updateOrbColor('#8CB6BC')}
 
 // ═══ PAGE SWITCHING ═══
 var pages={reflect:document.getElementById('pageReflect'),insights:document.getElementById('pageInsights'),practices:document.getElementById('pagePractices'),about:document.getElementById('pageAbout')};
 var hTexts={reflect:greet,insights:'Your Insights',practices:'Guided Practices',about:'About Bipolar'};
-function switchPage(n){Object.values(pages).forEach(function(p){p.style.display='none'});pages[n].style.display='block';pages[n].scrollTop=0;document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});document.querySelector('.nav-item[data-page="'+n+'"]').classList.add('active');document.getElementById('greeting').textContent=hTexts[n];pages[n].querySelectorAll('.glass-card').forEach(function(c,i){c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .5s ease '+(i*.08)+'s both'});if(n==='insights')setTimeout(drawCharts,100);if(n==='practices')renderPractices();if(n==='about')setTimeout(startLivedCarousel,300)}
+function switchPage(n){Object.values(pages).forEach(function(p){p.style.display='none'});pages[n].style.display='block';pages[n].scrollTop=0;document.querySelectorAll('.nav-item').forEach(function(x){var on=x.getAttribute('data-page')===n;x.classList.toggle('active',on);if(on)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});document.getElementById('greeting').textContent=hTexts[n];pages[n].querySelectorAll('.glass-card').forEach(function(c,i){c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .5s ease '+(i*.08)+'s both'});if(n==='insights')setTimeout(drawCharts,100);if(n==='practices')renderPractices();if(n==='about')setTimeout(startLivedCarousel,300)}
 window.addEventListener('resize',function(){if(pages.insights.style.display==='block')setTimeout(drawCharts,120)})
 
 // ═══ CHARTS ═══
@@ -592,22 +598,54 @@ var practiceIcons={
 };
 
 var currentMoodFilter='all',currentPracticeId=null,practiceTimer=null,breathPhaseTimer=null,timerRunning=false,currentStep=0;
+var practicesFilterManual=false;
+var LAST_MOOD_KEY='soluna_last_mood';
+function getStoredLastMood(){try{return localStorage.getItem(LAST_MOOD_KEY)}catch(e){return null}}
+function setStoredLastMood(s){try{if(s)localStorage.setItem(LAST_MOOD_KEY,s)}catch(e){}}
+function mapOrbStateToPracticeFilter(s){
+  if(!s)return 'all';
+  if(s==='mania'||s==='hypomania')return 'manic';
+  if(s==='depression')return 'depressed';
+  if(s==='stable')return 'stable';
+  return 'all';
+}
+function syncPracticeFilterFromLoggedMood(){
+  if(practicesFilterManual)return;
+  var m=selectedMood||getStoredLastMood();
+  currentMoodFilter=m?mapOrbStateToPracticeFilter(m):'all';
+}
+function updatePracticesFilterHint(){
+  var el=document.getElementById('practicesFilterHint');
+  if(!el)return;
+  if(practicesFilterManual||currentMoodFilter==='all'){el.hidden=true;return}
+  var m=selectedMood||getStoredLastMood();
+  if(!m){el.hidden=true;return}
+  var label=stateData[m]?stateData[m].name:m;
+  var from=selectedMood?'this session':'your last check-in';
+  el.textContent='Showing practices for '+label+' (from '+from+'). Tap All or another tab to change.';
+  el.hidden=false;
+}
 
 function renderPractices(){
+  syncPracticeFilterFromLoggedMood();
   var filterEl=document.getElementById('moodFilter');filterEl.innerHTML='';
-  var filters=[{key:'all',label:'All Practices'},{key:'manic',label:'Manic State'},{key:'depressed',label:'Depressed State'},{key:'stable',label:'Stable & Preventive'}];
-  filters.forEach(function(f){var btn=document.createElement('button');btn.className='filter-btn'+(currentMoodFilter===f.key?' active':'');btn.textContent=f.label;btn.onclick=function(){currentMoodFilter=f.key;renderPractices()};filterEl.appendChild(btn)});
-
-  if(selectedMood&&currentMoodFilter==='all'){
-    if(selectedMood==='mania'||selectedMood==='hypomania')currentMoodFilter='manic';
-    else if(selectedMood==='depression')currentMoodFilter='depressed';
-    else currentMoodFilter='stable';
-    filterEl.querySelectorAll('.filter-btn').forEach(function(b,i){b.classList.remove('active');if(filters[i].key===currentMoodFilter)b.classList.add('active')});
-  }
+  var filters=[{key:'all',label:'All'},{key:'manic',label:'Manic / elevated'},{key:'depressed',label:'Depressed / low'},{key:'stable',label:'Stable'}];
+  filters.forEach(function(f){
+    var btn=document.createElement('button');
+    btn.type='button';
+    btn.className='filter-btn'+(currentMoodFilter===f.key?' active':'');
+    btn.textContent=f.label;
+    btn.setAttribute('role','tab');
+    btn.setAttribute('aria-selected',currentMoodFilter===f.key?'true':'false');
+    btn.id='practice-filter-'+f.key;
+    btn.onclick=function(){practicesFilterManual=true;currentMoodFilter=f.key;renderPractices()};
+    filterEl.appendChild(btn);
+  });
+  updatePracticesFilterHint();
 
   var grid=document.getElementById('practicesGrid');grid.innerHTML='';
   practices.forEach(function(p,idx){
-    var show=currentMoodFilter==='all'||p.mood==='all'||p.mood===currentMoodFilter||(currentMoodFilter==='stable'&&p.mood==='all');
+    var show=currentMoodFilter==='all'||p.mood==='all'||p.mood===currentMoodFilter;
     var card=document.createElement('div');card.className='practice-card'+(show?'':' dimmed');card.style.animationDelay=(idx*.06)+'s';
     var badgesHtml=p.badges.map(function(b,i){return'<span class="practice-badge '+p.badgeClass[i]+'">'+b+'</span>'}).join('');
     var iconHtml=practiceIcons[p.icon]||'';
