@@ -17,6 +17,10 @@
   html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background:var(--sand);color:var(--text)}
   body{max-width:430px;margin:0 auto;position:relative}
   .app{height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative;background:var(--sand)}
+  .app>.header-zone{order:1}
+  .app>.wave-tilt-wrap{order:2}
+  .app>.page-content{order:3}
+  .app>.nav-bar{order:4}
 
   /* ═══ TWO-TONE HEADER WITH WAVE ═══ */
   .header-zone{position:relative;z-index:2;background:var(--header-bg);padding:52px 24px 0;flex-shrink:0}
@@ -134,6 +138,7 @@
   .practice-try:active{transform:scale(.96)}
 
   /* ═══ PRACTICE MODAL ═══ */
+  #practiceModal{order:10}
   .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,49,58,0.5);z-index:100;display:none;align-items:flex-end;justify-content:center}
   .modal-overlay.show{display:flex;animation:fadeIn .3s ease both}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -230,6 +235,70 @@
   .nav-item.active .nav-label{color:var(--teal);font-weight:400}
   .nav-dot{width:4px;height:4px;border-radius:50%;background:var(--teal);opacity:0;transition:opacity .25s ease;margin-top:-2px}
   .nav-item.active .nav-dot{opacity:1}
+
+  .reflect-split{display:flex;flex-direction:column}
+  .reflect-desktop-placeholder{display:none}
+
+  /* ═══ DESKTOP (≥900px) — wide shell, top nav, multi-column pages ═══ */
+  @media (min-width:900px){
+    body{max-width:none;margin:0}
+    .app{max-width:1180px;margin:0 auto;width:100%;min-height:100svh}
+    .app>.nav-bar{order:2}
+    .app>.wave-tilt-wrap{order:3}
+    .app>.page-content{order:4}
+    .nav-bar{position:relative;height:auto;border-top:none;border-bottom:1px solid rgba(255,255,255,0.65);padding:12px 40px 16px;justify-content:center;gap:8px 28px}
+    .nav-item{flex-direction:row;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-pill);transition:background .2s ease}
+    .nav-item:hover{background:rgba(14,137,146,0.06)}
+    .nav-item.active{background:rgba(14,137,146,0.1)}
+    .nav-label{font-size:12px;letter-spacing:.2px}
+    .nav-dot{margin-top:0}
+    .header-zone{padding:40px 48px 0}
+    .header-greeting{font-size:28px}
+    .orb-page,.question-flow,.completion-view,.insights-page,.practices-page,.about-page{padding-bottom:40px}
+    .glass-card{margin-left:0;margin-right:0}
+    /* Reflect: mood left, survey right */
+    .reflect-split{display:grid;grid-template-columns:minmax(300px,1fr) minmax(340px,1.15fr);gap:36px 48px;align-items:start;padding:16px 40px 40px;max-width:1100px;margin:0 auto}
+    .reflect-col-survey{display:flex;flex-direction:column;justify-content:flex-start;min-height:min(520px,70vh)}
+    .reflect-desktop-placeholder{display:flex;align-items:center;justify-content:center;flex:1}
+    .reflect-desktop-placeholder-inner{max-width:360px;padding:32px 28px;border-radius:var(--radius);border:1.5px dashed rgba(140,182,188,0.35);background:rgba(255,255,255,0.35);text-align:center}
+    .reflect-desktop-placeholder-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--navy);margin-bottom:10px}
+    .reflect-desktop-placeholder-text{font-weight:300;font-size:13px;color:var(--text-light);line-height:1.6}
+    #pageReflect .page[data-phase="questions"] .reflect-desktop-placeholder,
+    #pageReflect .page[data-phase="complete"] .reflect-desktop-placeholder{display:none}
+    .reflect-split .orb-page{padding-left:0;padding-right:0;padding-top:8px}
+    .reflect-split .question-flow,.reflect-split .completion-view{padding-left:0;padding-right:0;width:100%}
+    .question-flow{justify-content:center}
+    .completion-view{min-height:400px}
+    #pageReflect .page[data-phase="questions"] #questionFlow,
+    #pageReflect .page[data-phase="complete"] #compView{flex:1;min-height:0}
+    /* Insights: stats full width, two charts side by side, insight full width */
+    .insights-page{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px;padding:16px 40px 40px;max-width:1100px;margin:0 auto}
+    .insights-page .glass-card:first-child{grid-column:1/-1}
+    .insights-page .glass-card:nth-child(2){grid-column:1}
+    .insights-page .glass-card:nth-child(3){grid-column:2}
+    .insights-page .glass-card:nth-child(4){grid-column:1/-1}
+    /* Practices: two columns */
+    .practices-page{padding:16px 40px 40px;max-width:1100px;margin:0 auto}
+    .practices-page>.glass-card:first-child{margin-bottom:8px}
+    .mood-filter{margin-left:0;margin-right:0;flex-wrap:wrap;overflow:visible;padding-bottom:4px}
+    .practices-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:0}
+    /* About: intro + mood grid / lived + banner */
+    .about-page{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;padding:16px 40px 48px;max-width:1100px;margin:0 auto;align-items:start}
+    .about-page .glass-card:nth-child(1){grid-column:1}
+    .about-page .glass-card:nth-child(2){grid-column:2;grid-row:1/span 2}
+    .about-page .glass-card:nth-child(3){grid-column:1}
+    .about-page .glass-card:nth-child(4){grid-column:1/-1}
+    /* Modal: centered panel */
+    .modal-overlay{align-items:center;padding:24px}
+    .modal-content{border-radius:24px;max-width:520px;width:100%;max-height:min(88vh,800px);animation:modalDesk .35s ease both}
+    @keyframes modalDesk{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:none}}
+    .modal-handle{margin-bottom:16px}
+  }
+  /* Mobile: hide orb when questions or completion (desktop keeps orb via data-phase rules below) */
+  @media (max-width:899px){
+    #pageReflect .page[data-phase="questions"] #orbView,
+    #pageReflect .page[data-phase="complete"] #orbView{display:none!important}
+  }
 </style>
 </head>
 <body>
@@ -270,7 +339,9 @@
 
   <!-- ═══ REFLECT ═══ -->
   <div class="page-content" id="pageReflect">
-    <div class="page active">
+    <div class="page active" data-phase="orb">
+      <div class="reflect-split">
+        <div class="reflect-col reflect-col-orb">
       <div class="orb-page" id="orbView">
         <div class="orb-instruction">Drag the orb towards how you're feeling — or tap a state</div>
         <div class="orb-arena" id="orbArena">
@@ -296,8 +367,13 @@
         <div class="selected-feedback"><div class="selected-state-name" id="selectedName" style="opacity:0"></div><div class="selected-state-desc" id="selectedDesc" style="opacity:0"></div></div>
         <button class="continue-btn" id="continueBtn" onclick="startQuestions()">Continue</button>
       </div>
+        </div>
+        <div class="reflect-col reflect-col-survey">
+          <div class="reflect-desktop-placeholder" aria-hidden="true"><div class="reflect-desktop-placeholder-inner"><p class="reflect-desktop-placeholder-title">Daily check-in</p><p class="reflect-desktop-placeholder-text">Choose how you're feeling on the left, then tap Continue to answer a few short questions.</p></div></div>
       <div class="question-flow" id="questionFlow" style="display:none"><div class="question-progress" id="qProgress"></div><div class="q-card" id="qCard"><div class="q-label" id="qLabel"></div><div class="q-num" id="qNum"></div><div class="q-text" id="qText"></div><div class="q-options" id="qOpts"></div><div class="q-nav"><button class="q-back" id="qBack" onclick="prevQ()">&#8592; Back</button><button class="q-next" id="qNext" onclick="nextQ()">Next</button></div></div></div>
       <div class="completion-view" id="compView" style="display:none"><div class="completion-emoji">&#127754;</div><div class="completion-title">Reflection saved</div><div class="completion-text" id="compText"></div><button class="completion-done" onclick="resetAll()">Done</button></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -459,17 +535,19 @@ var questions=[
   {key:'finances',num:'6',label:'Finances & Spending',text:'How\'s your spending today?',options:[{letter:'A',bg:C.manic,text:'Not spending; neglecting needs'},{letter:'B',bg:C.hypomania,text:'Frugal; cautious'},{letter:'C',bg:C.stable,text:'Normal; on budget'},{letter:'D',bg:C.teal,text:'Impulsive buys'},{letter:'E',bg:C.depression,text:'Excessive; grand spending'}]}
 ];
 var curQ=0,qAns={};
-function startQuestions(){document.getElementById('orbView').style.display='none';var qf=document.getElementById('questionFlow');qf.style.display='flex';qf.style.animation='none';qf.offsetHeight;qf.style.animation='cardIn .5s ease both';curQ=0;renderQ()}
+function setReflectPhase(phase){var p=document.querySelector('#pageReflect .page');if(p)p.setAttribute('data-phase',phase)}
+function startQuestions(){var qf=document.getElementById('questionFlow');qf.style.display='flex';qf.style.animation='none';qf.offsetHeight;qf.style.animation='cardIn .5s ease both';curQ=0;setReflectPhase('questions');renderQ()}
 function renderQ(){var q=questions[curQ],prog=document.getElementById('qProgress');prog.innerHTML='';questions.forEach(function(_,i){var d=document.createElement('div');d.className='progress-dot'+(i<curQ?' filled':'')+(i===curQ?' current':'');prog.appendChild(d)});document.getElementById('qLabel').textContent=q.label;document.getElementById('qNum').textContent='Question '+q.num+' of 6';document.getElementById('qText').textContent=q.text;var o=document.getElementById('qOpts');o.innerHTML='';q.options.forEach(function(opt){var p=document.createElement('div');p.className='q-pill'+(qAns[q.key]===opt.letter?' selected':'');p.innerHTML='<span class="q-letter" style="background:'+opt.bg+'">'+opt.letter+'</span><span class="q-pill-text">'+opt.text+'</span>';p.addEventListener('click',function(){o.querySelectorAll('.q-pill').forEach(function(x){x.classList.remove('selected')});p.classList.add('selected');qAns[q.key]=opt.letter;document.getElementById('qNext').classList.add('enabled')});o.appendChild(p)});document.getElementById('qBack').style.visibility=curQ===0?'hidden':'visible';var nb=document.getElementById('qNext');nb.textContent=curQ===questions.length-1?'Finish':'Next';nb.classList.toggle('enabled',!!qAns[q.key]);var card=document.getElementById('qCard');card.style.animation='none';card.offsetHeight;card.style.animation='cardIn .35s ease both'}
 function nextQ(){if(!qAns[questions[curQ].key])return;if(curQ<questions.length-1){curQ++;renderQ()}else showComp()}
-function prevQ(){if(curQ>0){curQ--;renderQ()}else{document.getElementById('questionFlow').style.display='none';document.getElementById('orbView').style.display='flex'}}
-function showComp(){document.getElementById('questionFlow').style.display='none';var c=document.getElementById('compView');c.style.display='flex';c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .6s ease both';var msgs=['Thank you for checking in. Every reflection is a small act of self-care.','You showed up for yourself today. That matters more than you might think.','There are no wrong answers here — only honest ones. Well done.','Noticing how you feel is the first step towards understanding your patterns.'];document.getElementById('compText').textContent=msgs[Math.floor(Math.random()*msgs.length)]}
-function resetAll(){document.getElementById('compView').style.display='none';document.getElementById('orbView').style.display='flex';selectedMood=null;Object.keys(qAns).forEach(function(k){delete qAns[k]});curQ=0;document.querySelectorAll('.state-label').forEach(function(l){l.classList.remove('active')});document.getElementById('selectedName').style.opacity='0';document.getElementById('selectedDesc').style.opacity='0';document.getElementById('continueBtn').classList.remove('visible');orbEl.style.transition='all .5s ease';orbEl.style.left='50%';orbEl.style.top='50%';updateOrbColor('#8CB6BC')}
+function prevQ(){if(curQ>0){curQ--;renderQ()}else{document.getElementById('questionFlow').style.display='none';setReflectPhase('orb')}}
+function showComp(){document.getElementById('questionFlow').style.display='none';var c=document.getElementById('compView');c.style.display='flex';c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .6s ease both';setReflectPhase('complete');var msgs=['Thank you for checking in. Every reflection is a small act of self-care.','You showed up for yourself today. That matters more than you might think.','There are no wrong answers here — only honest ones. Well done.','Noticing how you feel is the first step towards understanding your patterns.'];document.getElementById('compText').textContent=msgs[Math.floor(Math.random()*msgs.length)]}
+function resetAll(){document.getElementById('compView').style.display='none';setReflectPhase('orb');selectedMood=null;Object.keys(qAns).forEach(function(k){delete qAns[k]});curQ=0;document.querySelectorAll('.state-label').forEach(function(l){l.classList.remove('active')});document.getElementById('selectedName').style.opacity='0';document.getElementById('selectedDesc').style.opacity='0';document.getElementById('continueBtn').classList.remove('visible');orbEl.style.transition='all .5s ease';orbEl.style.left='50%';orbEl.style.top='50%';updateOrbColor('#8CB6BC')}
 
 // ═══ PAGE SWITCHING ═══
 var pages={reflect:document.getElementById('pageReflect'),insights:document.getElementById('pageInsights'),practices:document.getElementById('pagePractices'),about:document.getElementById('pageAbout')};
 var hTexts={reflect:greet,insights:'Your Insights',practices:'Guided Practices',about:'About Bipolar'};
 function switchPage(n){Object.values(pages).forEach(function(p){p.style.display='none'});pages[n].style.display='block';pages[n].scrollTop=0;document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});document.querySelector('.nav-item[data-page="'+n+'"]').classList.add('active');document.getElementById('greeting').textContent=hTexts[n];pages[n].querySelectorAll('.glass-card').forEach(function(c,i){c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .5s ease '+(i*.08)+'s both'});if(n==='insights')setTimeout(drawCharts,100);if(n==='practices')renderPractices();if(n==='about')setTimeout(startLivedCarousel,300)}
+window.addEventListener('resize',function(){if(pages.insights.style.display==='block')setTimeout(drawCharts,120)})
 
 // ═══ CHARTS ═══
 var sampleDays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
