@@ -24,9 +24,10 @@
   .header-greeting{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:26px;color:var(--navy);line-height:1.2;text-align:center}
   .header-date{font-weight:300;font-size:12px;color:var(--text-light);margin-top:3px;letter-spacing:.3px;text-align:center;padding-bottom:18px}
 
-  /* SVG wave divider */
-  .wave-divider{position:relative;z-index:2;margin-top:-1px;line-height:0;flex-shrink:0}
-  .wave-divider svg{display:block;width:100%;height:auto}
+  /* SVG wave divider — wide tile + horizontal motion for seamless loop */
+  .wave-divider{position:relative;z-index:2;margin-top:-1px;line-height:0;flex-shrink:0;overflow:hidden}
+  .wave-divider .wave-svg{display:block;width:200%;height:auto;animation:waveFlow 10s linear infinite}
+  @keyframes waveFlow{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
   /* ═══ PAGE CONTENT ═══ */
   .page-content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:1;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
@@ -116,6 +117,7 @@
   .practices-grid{display:flex;flex-direction:column;gap:12px;padding:0 20px}
   .practice-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px 20px;box-shadow:0 4px 24px var(--glass-shadow);transition:all .3s ease;animation:cardIn .4s ease both}
   .practice-card.dimmed{opacity:.35;pointer-events:none}
+  .practice-card.dimmed .practice-try{pointer-events:auto;position:relative;z-index:2}
   .practice-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
   .practice-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(14,137,146,0.08);flex-shrink:0;color:var(--teal)}
   .practice-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:16px;color:var(--navy)}
@@ -134,7 +136,7 @@
   .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,49,58,0.5);z-index:100;display:none;align-items:flex-end;justify-content:center}
   .modal-overlay.show{display:flex;animation:fadeIn .3s ease both}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-  .modal-content{background:var(--sand);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:88vh;overflow-y:auto;padding:24px 20px 32px;animation:slideUp .4s cubic-bezier(.34,1.56,.64,1)}
+  .modal-content{background:var(--sand);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:88vh;overflow-y:auto;padding:24px 20px 32px;animation:slideUp .4s cubic-bezier(.34,1.56,.64,1);touch-action:pan-y}
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .modal-handle{width:40px;height:4px;border-radius:4px;background:var(--sand-deep);margin:0 auto 20px}
   .modal-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;color:var(--navy);text-align:center;margin-bottom:6px}
@@ -239,11 +241,13 @@
     <div class="header-date" id="dateDisplay"></div>
   </div>
 
-  <!-- ═══ WAVE DIVIDER ═══ -->
+  <!-- ═══ WAVE DIVIDER (tiled SVG, CSS animates -50% for seamless flow) ═══ -->
   <div class="wave-divider">
-    <svg viewBox="0 0 430 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="wave-svg" viewBox="0 0 860 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M0,0 L0,16 Q55,32 110,20 Q180,6 250,18 Q320,30 390,14 Q415,8 430,12 L430,0 Z" fill="#FDF8F4"/>
       <path d="M0,16 Q55,32 110,20 Q180,6 250,18 Q320,30 390,14 Q415,8 430,12 L430,32 L0,32 Z" fill="#F6EFE8"/>
+      <path d="M430,0 L430,16 Q485,32 540,20 Q610,6 680,18 Q750,30 820,14 Q845,8 860,12 L860,0 Z" fill="#FDF8F4"/>
+      <path d="M430,16 Q485,32 540,20 Q610,6 680,18 Q750,30 820,14 Q845,8 860,12 L860,32 L430,32 Z" fill="#F6EFE8"/>
     </svg>
   </div>
 
@@ -473,6 +477,7 @@ function renderPractices(){
     card.innerHTML='<div class="practice-header"><div class="practice-icon">'+iconHtml+'</div><div class="practice-title">'+p.title+'</div></div><div class="practice-desc">'+p.description+'</div><div class="practice-footer"><div class="practice-badges">'+badgesHtml+'</div></div>';
     // Create button with addEventListener (not innerHTML onclick)
     var tryBtn=document.createElement('button');
+    tryBtn.type='button';
     tryBtn.className='practice-try';
     tryBtn.textContent='Try Now';
     (function(practiceId){
@@ -504,6 +509,20 @@ function openModal(id){
 }
 
 function closeModal(){document.getElementById('practiceModal').classList.remove('show');clearInterval(practiceTimer);clearInterval(breathPhaseTimer);timerRunning=false;var fw=document.getElementById('flowerWrap');if(fw)fw.className='flower-wrap idle'}
+
+;(function(){
+  var modal=document.getElementById('practiceModal');
+  var sheet=modal.querySelector('.modal-content');
+  var startY=0,tracking=false;
+  sheet.addEventListener('touchstart',function(e){if(e.touches.length===1){startY=e.touches[0].clientY;tracking=true}},{passive:true});
+  sheet.addEventListener('touchend',function(e){
+    if(!tracking)return;tracking=false;
+    if(sheet.scrollTop>0)return;
+    var endY=e.changedTouches[0].clientY;
+    if(endY-startY>56)closeModal();
+  },{passive:true});
+  modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});
+})();
 
 function updateTimerDisplay(){var v=document.getElementById('timerSlider').value;document.getElementById('timerDisplay').textContent=String(v).padStart(2,'0')+':00';document.getElementById('timerLabel').textContent=v+' minute'+(v>1?'s':'')}
 
