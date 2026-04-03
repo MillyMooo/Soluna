@@ -28,11 +28,14 @@
   .header-greeting{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:26px;color:var(--navy);line-height:1.2;text-align:center}
   .header-date{font-weight:300;font-size:12px;color:var(--text-light);margin-top:3px;letter-spacing:.3px;text-align:center;padding-bottom:18px}
 
-  /* Wave: clip overflow so oversized tilted layer never shows past screen edges */
+  /* Wave: clip overflow; extra-wide SVG + JS scale so 3D tilt never exposes gaps */
   .wave-tilt-wrap{position:relative;z-index:2;margin-top:-1px;flex-shrink:0;width:100%;overflow:hidden;line-height:0;background:var(--sand)}
-  /* Wider than viewport — when 3D-tilted, corners still reach left/right; negative margin centers bleed */
-  .wave-divider{position:relative;width:118%;margin-left:-9%;transform-origin:50% 100%;transform-style:preserve-3d;will-change:transform;backface-visibility:hidden}
-  .wave-divider .wave-svg{display:block;width:100%;height:auto;vertical-align:top}
+  .wave-tilt-wrap::before{
+    content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(180deg,var(--header-bg) 0%,var(--header-bg) 42%,var(--sand) 100%);
+  }
+  .wave-divider{position:relative;z-index:1;width:145%;margin-left:-22.5%;transform-origin:50% 100%;transform-style:preserve-3d;will-change:transform;backface-visibility:hidden}
+  .wave-divider .wave-svg{display:block;width:100%;height:auto}
 
   /* ═══ PAGE CONTENT ═══ */
   .page-content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:1;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
@@ -482,9 +485,11 @@ document.getElementById('dateDisplay').textContent=now.toLocaleDateString('en-GB
     curRx+=(targetRx-curRx)*smooth;
     curRz+=(targetRz-curRz)*smooth;
     var rxRad=curRx*Math.PI/180;
-    var cover=1.06/Math.max(0.92,Math.cos(rxRad));
-    if(cover>1.18)cover=1.18;
-    el.style.transform='perspective(900px) rotateX('+curRx.toFixed(2)+'deg) rotateZ('+curRz.toFixed(2)+'deg) scale3d('+cover.toFixed(4)+','+cover.toFixed(4)+',1)';
+    var rzRad=curRz*Math.PI/180;
+    var cosP=Math.max(0.76,Math.cos(rxRad)*Math.cos(rzRad));
+    var cover=1.16/cosP;
+    if(cover>1.42)cover=1.42;
+    el.style.transform='perspective(2200px) rotateX('+curRx.toFixed(2)+'deg) rotateZ('+curRz.toFixed(2)+'deg) scale3d('+cover.toFixed(4)+','+cover.toFixed(4)+',1)';
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
