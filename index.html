@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Soluna</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  :root{
+    --peach:#E9A27C;--blush:#E7BBA6;--mist:#8CB6BC;--teal:#0E8992;--navy:#0D313A;
+    --sand:#F6EFE8;--sand-deep:#EDE4D9;--header-bg:#FDF8F4;
+    --glass:rgba(255,255,255,0.48);--glass-border:rgba(255,255,255,0.65);--glass-shadow:rgba(13,49,58,0.06);
+    --text:#0D313A;--text-light:rgba(13,49,58,0.55);
+    --radius:20px;--radius-sm:14px;--radius-pill:50px;
+  }
+  html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background:var(--sand);color:var(--text)}
+  body{max-width:430px;margin:0 auto;position:relative}
+  .app{height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative;background:var(--sand)}
+
+  /* ═══ TWO-TONE HEADER WITH WAVE ═══ */
+  .header-zone{position:relative;z-index:2;background:var(--header-bg);padding:52px 24px 0;flex-shrink:0}
+  .header-brand{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:14px;letter-spacing:3.5px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;text-align:center}
+  .header-greeting{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:26px;color:var(--navy);line-height:1.2;text-align:center}
+  .header-date{font-weight:300;font-size:12px;color:var(--text-light);margin-top:3px;letter-spacing:.3px;text-align:center;padding-bottom:18px}
+
+  /* SVG wave divider */
+  .wave-divider{position:relative;z-index:2;margin-top:-1px;line-height:0;flex-shrink:0}
+  .wave-divider svg{display:block;width:100%;height:auto}
+
+  /* ═══ PAGE CONTENT ═══ */
+  .page-content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:1;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+  .page-content::-webkit-scrollbar{display:none}
+  .page{display:none}.page.active{display:block}
+
+  .glass-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:24px;margin:0 20px 16px;box-shadow:0 4px 24px var(--glass-shadow);animation:cardIn .5s ease both}
+  @keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .glass-card:nth-child(2){animation-delay:.08s}.glass-card:nth-child(3){animation-delay:.16s}.glass-card:nth-child(4){animation-delay:.24s}.glass-card:nth-child(5){animation-delay:.32s}
+  .card-label{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:14px}
+  .card-subtitle{font-weight:300;font-size:13px;color:var(--text-light);line-height:1.5}
+
+  /* ═══ ORB PAGE ═══ */
+  .orb-page{display:flex;flex-direction:column;align-items:center;padding:12px 20px 110px;min-height:100%}
+  .orb-instruction{font-weight:300;font-size:12.5px;color:var(--text-light);text-align:center;margin-bottom:10px;animation:cardIn .6s ease both}
+  .orb-arena{position:relative;width:310px;height:310px;margin:0 auto;flex-shrink:0;animation:cardIn .6s ease .1s both}
+  .orb-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:225px;height:225px;border-radius:50%;border:1px solid rgba(140,182,188,0.15);pointer-events:none;z-index:1}
+  .orb-ring-2{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:275px;height:275px;border-radius:50%;border:1px dashed rgba(140,182,188,0.08);pointer-events:none;z-index:0}
+
+  .state-label{position:absolute;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:13.5px;letter-spacing:.6px;cursor:pointer;transition:all .4s ease;padding:8px 16px;border-radius:var(--radius-pill);border:1.5px solid transparent;background:transparent;white-space:nowrap;user-select:none;-webkit-user-select:none;z-index:3}
+  .state-label.active{font-weight:500;border-color:currentColor;background:rgba(255,255,255,0.5)}
+  .state-label[data-state="hypomania"]{top:2px;left:50%;transform:translateX(-50%);color:var(--blush)}
+  .state-label[data-state="mania"]{top:50%;right:0;transform:translateY(-50%);color:var(--peach)}
+  .state-label[data-state="stable"]{bottom:2px;left:50%;transform:translateX(-50%);color:var(--mist)}
+  .state-label[data-state="depression"]{top:50%;left:0;transform:translateY(-50%);color:var(--navy)}
+  .state-label[data-state="hypomania"].active{transform:translateX(-50%) scale(1.05)}
+  .state-label[data-state="mania"].active{transform:translateY(-50%) scale(1.05)}
+  .state-label[data-state="stable"].active{transform:translateX(-50%) scale(1.05)}
+  .state-label[data-state="depression"].active{transform:translateY(-50%) scale(1.05)}
+
+  .orb-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:150px;height:150px;cursor:grab;z-index:2;filter:drop-shadow(0 8px 28px rgba(140,182,188,0.3));transition:filter .5s ease;animation:orbBreathe 6s ease-in-out infinite}
+  .orb-container:active{cursor:grabbing}
+  .orb-container svg{width:100%;height:100%;overflow:visible}
+  @keyframes orbBreathe{0%,100%{transform:translate(-50%,-50%) scale(1)}35%{transform:translate(-50%,-50%) scale(1.08)}50%{transform:translate(-50%,-50%) scale(1.06)}85%{transform:translate(-50%,-50%) scale(0.96)}}
+
+  .selected-feedback{text-align:center;margin-top:12px;min-height:60px}
+  .selected-state-name{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;color:var(--navy);margin-bottom:4px;transition:color .4s ease}
+  .selected-state-desc{font-weight:300;font-size:12px;color:var(--text-light);line-height:1.55;max-width:280px;margin:0 auto}
+  .continue-btn{margin-top:12px;padding:14px 40px;border-radius:var(--radius-pill);border:none;background:var(--teal);color:white;font-family:'Outfit',sans-serif;font-weight:300;font-size:14px;letter-spacing:1px;cursor:pointer;opacity:0;transform:translateY(8px);transition:all .4s ease}
+  .continue-btn.visible{opacity:1;transform:translateY(0)}.continue-btn:active{transform:scale(.96)}
+
+  /* ═══ QUESTIONNAIRE ═══ */
+  .question-flow{padding:8px 20px 110px;min-height:100%;display:flex;flex-direction:column;animation:cardIn .5s ease both}
+  .question-progress{display:flex;gap:6px;margin-bottom:20px}
+  .progress-dot{flex:1;height:3px;border-radius:3px;background:var(--sand-deep);transition:background .4s ease}
+  .progress-dot.filled{background:var(--teal)}.progress-dot.current{background:rgba(14,137,146,0.3)}
+  .q-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:24px 22px;box-shadow:0 4px 24px var(--glass-shadow);flex:1;display:flex;flex-direction:column}
+  .q-label{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+  .q-num{font-weight:300;font-size:11px;color:var(--text-light);margin-bottom:14px}
+  .q-text{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:20px;color:var(--navy);margin-bottom:20px;line-height:1.35}
+  .q-options{display:flex;flex-direction:column;gap:8px;flex:1}
+  .q-pill{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);border:1.5px solid rgba(140,182,188,0.18);background:rgba(255,255,255,0.35);cursor:pointer;transition:all .3s ease}
+  .q-pill:active{transform:scale(.98)}.q-pill.selected{border-color:var(--teal);background:rgba(14,137,146,0.08)}
+  .q-letter{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:white;flex-shrink:0;opacity:.6;transition:all .3s ease}
+  .q-pill.selected .q-letter{opacity:1;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+  .q-pill-text{font-weight:300;font-size:13px;color:var(--navy);line-height:1.4}
+  .q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px}
+  .q-back{font-family:'Outfit',sans-serif;font-weight:300;font-size:13px;color:var(--text-light);background:none;border:none;cursor:pointer;padding:8px 4px}
+  .q-next{padding:12px 32px;border-radius:var(--radius-pill);border:none;background:var(--teal);color:white;font-family:'Outfit',sans-serif;font-weight:300;font-size:13px;letter-spacing:.8px;cursor:pointer;opacity:.35;pointer-events:none;transition:all .3s ease}
+  .q-next.enabled{opacity:1;pointer-events:auto}.q-next:active{transform:scale(.96)}
+
+  /* ═══ COMPLETION ═══ */
+  .completion-view{padding:40px 20px 110px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;animation:cardIn .6s ease both}
+  .completion-emoji{font-size:44px;margin-bottom:16px}
+  .completion-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:24px;color:var(--navy);margin-bottom:10px}
+  .completion-text{font-weight:300;font-size:13.5px;color:var(--text-light);line-height:1.65;max-width:280px;margin:0 auto;font-style:italic}
+  .completion-done{margin-top:32px;padding:14px 40px;border-radius:var(--radius-pill);border:1.5px solid var(--teal);background:transparent;color:var(--teal);font-family:'Outfit',sans-serif;font-weight:300;font-size:13px;letter-spacing:1px;cursor:pointer}
+
+  /* ═══ INSIGHTS ═══ */
+  .insights-page{padding:8px 0 110px}
+  .insight-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .insight-stat{border-radius:var(--radius-sm);padding:16px;text-align:center;border:1px solid rgba(255,255,255,0.5)}
+  .stat-value{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:30px;line-height:1}
+  .stat-label-text{font-size:10px;font-weight:300;color:var(--text-light);margin-top:5px}
+  .chart-container{position:relative;width:100%;margin-top:8px}
+  .chart-canvas{width:100%;display:block}
+  .chart-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:300;color:var(--text-light)}
+  .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+  /* ═══ PRACTICES PAGE ═══ */
+  .practices-page{padding:8px 0 110px}
+  .mood-filter{display:flex;gap:8px;margin:0 20px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .mood-filter::-webkit-scrollbar{display:none}
+  .filter-btn{padding:8px 16px;border-radius:var(--radius-pill);border:1.5px solid rgba(140,182,188,0.2);background:rgba(255,255,255,0.4);font-family:'Outfit',sans-serif;font-weight:300;font-size:11px;color:var(--text-light);cursor:pointer;white-space:nowrap;transition:all .3s ease;flex-shrink:0}
+  .filter-btn.active{border-color:var(--teal);background:rgba(14,137,146,0.1);color:var(--teal);font-weight:400}
+  .practices-grid{display:flex;flex-direction:column;gap:12px;padding:0 20px}
+  .practice-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px 20px;box-shadow:0 4px 24px var(--glass-shadow);transition:all .3s ease;animation:cardIn .4s ease both}
+  .practice-card.dimmed{opacity:.35;pointer-events:none}
+  .practice-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .practice-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(14,137,146,0.08);flex-shrink:0;color:var(--teal)}
+  .practice-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:16px;color:var(--navy)}
+  .practice-desc{font-weight:300;font-size:12px;color:var(--text-light);line-height:1.5;margin-bottom:10px}
+  .practice-footer{display:flex;justify-content:space-between;align-items:center}
+  .practice-badges{display:flex;gap:6px}
+  .practice-badge{font-size:9px;font-weight:400;padding:3px 10px;border-radius:var(--radius-pill);letter-spacing:.3px}
+  .badge-manic{background:rgba(233,162,124,0.15);color:var(--peach)}
+  .badge-depressed{background:rgba(13,49,58,0.08);color:var(--navy)}
+  .badge-stable{background:rgba(140,182,188,0.15);color:var(--teal)}
+  .badge-all{background:rgba(14,137,146,0.08);color:var(--teal)}
+  .practice-try{padding:8px 20px;border-radius:var(--radius-pill);border:none;background:var(--teal);color:white;font-family:'Outfit',sans-serif;font-weight:300;font-size:11px;letter-spacing:.5px;cursor:pointer}
+  .practice-try:active{transform:scale(.96)}
+
+  /* ═══ PRACTICE MODAL ═══ */
+  .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,49,58,0.5);z-index:100;display:none;align-items:flex-end;justify-content:center}
+  .modal-overlay.show{display:flex;animation:fadeIn .3s ease both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal-content{background:var(--sand);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:88vh;overflow-y:auto;padding:24px 20px 32px;animation:slideUp .4s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-handle{width:40px;height:4px;border-radius:4px;background:var(--sand-deep);margin:0 auto 20px}
+  .modal-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;color:var(--navy);text-align:center;margin-bottom:6px}
+  .modal-desc{font-weight:300;font-size:12px;color:var(--text-light);text-align:center;line-height:1.5;margin-bottom:20px}
+
+  /* Breathing flower animation — 5 ovals rotating different directions */
+  .breathing-container{position:relative;width:200px;height:200px;margin:0 auto 16px}
+  .flower-wrap{position:absolute;top:0;left:0;width:100%;height:100%;transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+  .flower-wrap.inhale{transform:scale(1.22)}
+  .flower-wrap.hold-full{transform:scale(1.22)}
+  .flower-wrap.exhale{transform:scale(.78)}
+  .flower-wrap.hold-empty{transform:scale(.78)}
+  .flower-wrap.idle{transform:scale(1)}
+  .breathing-oval{position:absolute;top:50%;left:50%;width:65px;height:115px;border-radius:50%;background:rgba(14,137,146,0.08);border:1.5px solid rgba(14,137,146,0.15);transform-origin:center center}
+  .breathing-oval:nth-child(1){animation:spinCW 20s linear infinite;--base-rot:0deg}
+  .breathing-oval:nth-child(2){animation:spinCCW 24s linear infinite;--base-rot:36deg}
+  .breathing-oval:nth-child(3){animation:spinCW 18s linear infinite;--base-rot:72deg}
+  .breathing-oval:nth-child(4){animation:spinCCW 22s linear infinite;--base-rot:108deg}
+  .breathing-oval:nth-child(5){animation:spinCW 26s linear infinite;--base-rot:144deg}
+  @keyframes spinCW{from{transform:translate(-50%,-50%) rotate(var(--base-rot))}to{transform:translate(-50%,-50%) rotate(calc(var(--base-rot) + 360deg))}}
+  @keyframes spinCCW{from{transform:translate(-50%,-50%) rotate(var(--base-rot))}to{transform:translate(-50%,-50%) rotate(calc(var(--base-rot) - 360deg))}}
+  .breath-prompt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2;pointer-events:none}
+  .breath-prompt-text{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:16px;color:var(--teal);display:block;transition:opacity .4s ease}
+  .breath-counter{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:30px;color:var(--navy);display:block;margin-top:2px;opacity:.7}
+
+  /* Timer */
+  .timer-section{text-align:center;margin-bottom:20px}
+  .timer-display{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:36px;color:var(--navy);margin-bottom:12px}
+  .timer-slider{-webkit-appearance:none;appearance:none;width:80%;height:4px;border-radius:4px;background:var(--sand-deep);outline:none}
+  .timer-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--teal);cursor:pointer;box-shadow:0 2px 8px rgba(14,137,146,0.3)}
+  .timer-label{font-weight:300;font-size:11px;color:var(--text-light);margin-top:8px}
+
+  /* Stepped instructions */
+  .steps-container{margin-bottom:20px}
+  .practice-step{padding:14px 16px;border-radius:var(--radius-sm);border:1px solid rgba(140,182,188,0.12);background:rgba(255,255,255,0.3);margin-bottom:8px;transition:all .4s ease;opacity:.5}
+  .practice-step.active{opacity:1;background:rgba(14,137,146,0.06);border-color:var(--teal);box-shadow:0 2px 12px rgba(14,137,146,0.1)}
+  .practice-step.done{opacity:.6}
+  .step-header{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .step-num{width:22px;height:22px;border-radius:50%;background:var(--sand-deep);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:400;color:var(--text-light);flex-shrink:0;transition:all .3s ease}
+  .practice-step.active .step-num{background:var(--teal);color:white}
+  .practice-step.done .step-num{background:var(--mist);color:white}
+  .step-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:14px;color:var(--navy)}
+  .step-text{font-weight:300;font-size:12px;color:var(--text-light);line-height:1.5;padding-left:32px}
+
+  .modal-controls{display:flex;gap:10px;justify-content:center}
+  .modal-btn{padding:12px 32px;border-radius:var(--radius-pill);border:none;font-family:'Outfit',sans-serif;font-weight:300;font-size:13px;letter-spacing:.5px;cursor:pointer;transition:all .3s ease}
+  .modal-btn.primary{background:var(--teal);color:white}
+  .modal-btn.secondary{background:transparent;border:1.5px solid var(--teal);color:var(--teal)}
+  .modal-btn:active{transform:scale(.96)}
+
+  /* ═══ ABOUT ═══ */
+  .about-page{padding:8px 0 110px}
+  .state-card{padding:16px;border-radius:var(--radius-sm);margin-bottom:10px;border-left:3px solid}
+  .state-card.s-mania{background:rgba(233,162,124,0.1);border-left-color:var(--peach)}
+  .state-card.s-hypomania{background:rgba(231,187,166,0.12);border-left-color:var(--blush)}
+  .state-card.s-stable{background:rgba(140,182,188,0.1);border-left-color:var(--mist)}
+  .state-card.s-depression{background:rgba(13,49,58,0.06);border-left-color:var(--navy)}
+  .state-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:15px;color:var(--navy);margin-bottom:3px}
+  .state-desc{font-weight:300;font-size:12px;color:var(--text-light);line-height:1.55}
+  .info-banner{background:rgba(14,137,146,0.08);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:flex-start;gap:10px}
+  .info-banner-icon{color:var(--teal);font-size:16px;flex-shrink:0;margin-top:1px}
+  .info-banner-text{font-weight:300;font-size:12px;color:var(--navy);line-height:1.55}
+
+  /* ═══ JOURNAL ═══ */
+  .journal-textarea{width:100%;min-height:180px;border:1.5px solid rgba(140,182,188,0.2);border-radius:var(--radius-sm);background:rgba(255,255,255,0.4);padding:16px;font-family:'Outfit',sans-serif;font-weight:300;font-size:14px;color:var(--navy);line-height:1.6;resize:none;outline:none;transition:border-color .3s ease;margin-bottom:12px}
+  .journal-textarea:focus{border-color:var(--teal)}
+  .journal-textarea::placeholder{color:rgba(13,49,58,0.3);font-style:italic}
+  .journal-entries-btn{display:flex;align-items:center;gap:8px;margin:0 auto 12px;padding:10px 20px;border-radius:var(--radius-pill);border:1.5px solid rgba(140,182,188,0.2);background:rgba(255,255,255,0.3);font-family:'Outfit',sans-serif;font-weight:300;font-size:12px;color:var(--text-light);cursor:pointer;transition:all .3s ease}
+  .journal-entries-btn:active{transform:scale(.97)}
+  .journal-entries-btn svg{color:var(--teal)}
+  .journal-prev-entries{max-height:200px;overflow-y:auto;margin-bottom:12px}
+  .journal-prev-entries::-webkit-scrollbar{display:none}
+  .journal-entry-item{padding:12px 14px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.35);border:1px solid rgba(140,182,188,0.1);margin-bottom:8px}
+  .journal-entry-date{font-size:10px;font-weight:400;color:var(--teal);letter-spacing:.3px;margin-bottom:4px}
+  .journal-entry-text{font-weight:300;font-size:12px;color:var(--navy);line-height:1.5;white-space:pre-wrap;max-height:60px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+
+  /* ═══ LIVED EXPERIENCE CAROUSEL ═══ */
+  .lived-carousel{position:relative;min-height:48px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .lived-text{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:15px;color:var(--navy);text-align:center;line-height:1.55;font-style:italic;padding:0 8px;opacity:0;transition:opacity .8s ease,transform .8s ease}
+  .lived-text.visible{opacity:1;transform:translateX(0)}
+  .lived-text.enter-right{opacity:0;transform:translateX(24px)}
+  .lived-text.exit-left{opacity:0;transform:translateX(-24px)}
+
+  /* ═══ NAV (4 tabs now) ═══ */
+  .nav-bar{position:absolute;bottom:0;left:0;right:0;height:82px;background:rgba(246,239,232,0.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.6);display:flex;justify-content:space-around;align-items:flex-start;padding-top:12px;z-index:10}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 10px}
+  .nav-icon svg{width:22px;height:22px;stroke:var(--text-light);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .25s ease}
+  .nav-item.active .nav-icon svg{stroke:var(--teal)}
+  .nav-label{font-size:9px;font-weight:300;color:var(--text-light);letter-spacing:.4px;transition:color .25s ease}
+  .nav-item.active .nav-label{color:var(--teal);font-weight:400}
+  .nav-dot{width:4px;height:4px;border-radius:50%;background:var(--teal);opacity:0;transition:opacity .25s ease;margin-top:-2px}
+  .nav-item.active .nav-dot{opacity:1}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ═══ HEADER (lighter tone) ═══ -->
+  <div class="header-zone">
+    <div class="header-brand">Soluna</div>
+    <div class="header-greeting" id="greeting">Good morning</div>
+    <div class="header-date" id="dateDisplay"></div>
+  </div>
+
+  <!-- ═══ WAVE DIVIDER ═══ -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 430 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,16 Q55,32 110,20 Q180,6 250,18 Q320,30 390,14 Q415,8 430,12 L430,0 Z" fill="#FDF8F4"/>
+      <path d="M0,16 Q55,32 110,20 Q180,6 250,18 Q320,30 390,14 Q415,8 430,12 L430,32 L0,32 Z" fill="#F6EFE8"/>
+    </svg>
+  </div>
+
+  <!-- ═══ REFLECT ═══ -->
+  <div class="page-content" id="pageReflect">
+    <div class="page active">
+      <div class="orb-page" id="orbView">
+        <div class="orb-instruction">Drag the orb towards how you're feeling — or tap a state</div>
+        <div class="orb-arena" id="orbArena">
+          <div class="orb-ring-2"></div><div class="orb-ring"></div>
+          <div class="state-label" data-state="hypomania" onclick="selectState('hypomania')">Hypomania</div>
+          <div class="state-label" data-state="mania" onclick="selectState('mania')">Mania</div>
+          <div class="state-label" data-state="stable" onclick="selectState('stable')">Stable</div>
+          <div class="state-label" data-state="depression" onclick="selectState('depression')">Depression</div>
+          <div class="orb-container" id="orbContainer">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="orbGrad" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#c8e0df" stop-opacity=".9"/><stop offset="45%" stop-color="#8CB6BC" stop-opacity=".85"/><stop offset="100%" stop-color="#6a9ea5" stop-opacity=".8"/></radialGradient>
+                <radialGradient id="orbHL" cx="35%" cy="30%" r="35%"><stop offset="0%" stop-color="white" stop-opacity=".5"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient>
+                <radialGradient id="orbDP" cx="60%" cy="65%" r="50%"><stop offset="0%" stop-color="#4a8088" stop-opacity=".3"/><stop offset="100%" stop-color="#4a8088" stop-opacity="0"/></radialGradient>
+                <filter id="orbGlow"><feGaussianBlur stdDeviation="4" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <path d="M100,28 C135,28 168,48 178,80 C188,112 178,148 158,170 C138,192 108,198 80,188 C52,178 28,158 22,128 C16,98 22,62 42,42 C62,22 65,28 100,28Z" fill="url(#orbGrad)" filter="url(#orbGlow)"><animate attributeName="d" dur="8s" repeatCount="indefinite" values="M100,28 C135,28 168,48 178,80 C188,112 178,148 158,170 C138,192 108,198 80,188 C52,178 28,158 22,128 C16,98 22,62 42,42 C62,22 65,28 100,28Z;M100,24 C140,24 172,52 180,85 C188,118 172,152 150,172 C128,192 102,200 75,190 C48,180 24,155 20,125 C16,95 28,58 48,38 C68,18 60,24 100,24Z;M100,30 C132,26 170,46 180,78 C190,110 180,150 160,172 C140,194 112,198 82,190 C52,182 26,160 20,130 C14,100 20,60 40,40 C60,20 68,34 100,30Z;M100,28 C135,28 168,48 178,80 C188,112 178,148 158,170 C138,192 108,198 80,188 C52,178 28,158 22,128 C16,98 22,62 42,42 C62,22 65,28 100,28Z" keySplines=".4 0 .6 1;.4 0 .6 1;.4 0 .6 1" calcMode="spline"/></path>
+              <path d="M100,28 C135,28 168,48 178,80 C188,112 178,148 158,170 C138,192 108,198 80,188 C52,178 28,158 22,128 C16,98 22,62 42,42 C62,22 65,28 100,28Z" fill="url(#orbHL)"><animate attributeName="d" dur="8s" repeatCount="indefinite" values="M100,28 C135,28 168,48 178,80 C188,112 178,148 158,170 C138,192 108,198 80,188 C52,178 28,158 22,128 C16,98 22,62 42,42 C62,22 65,28 100,28Z;M100,24 C140,24 172,52 180,85 C188,118 172,152 150,172 C128,192 102,200 75,190 C48,180 24,155 20,125 C16,95 28,58 48,38 C68,18 60,24 100,24Z;M100,30 C132,26 170,46 180,78 C190,110 180,150 160,172 C140,194 112,198 82,190 C52,182 26,160 20,130 C14,100 20,60 40,40 C60,20 68,34 100,30Z;M100,28 C135,28 168,48 178,80 C188,112 178,148 158,170 C138,192 108,198 80,188 C52,178 28,158 22,128 C16,98 22,62 42,42 C62,22 65,28 100,28Z" keySplines=".4 0 .6 1;.4 0 .6 1;.4 0 .6 1" calcMode="spline"/></path>
+              <ellipse cx="75" cy="72" rx="26" ry="16" fill="white" opacity=".15" transform="rotate(-20 75 72)"><animate attributeName="opacity" dur="4s" repeatCount="indefinite" values=".15;.25;.15"/></ellipse>
+            </svg>
+          </div>
+        </div>
+        <div class="selected-feedback"><div class="selected-state-name" id="selectedName" style="opacity:0"></div><div class="selected-state-desc" id="selectedDesc" style="opacity:0"></div></div>
+        <button class="continue-btn" id="continueBtn" onclick="startQuestions()">Continue</button>
+      </div>
+      <div class="question-flow" id="questionFlow" style="display:none"><div class="question-progress" id="qProgress"></div><div class="q-card" id="qCard"><div class="q-label" id="qLabel"></div><div class="q-num" id="qNum"></div><div class="q-text" id="qText"></div><div class="q-options" id="qOpts"></div><div class="q-nav"><button class="q-back" id="qBack" onclick="prevQ()">&#8592; Back</button><button class="q-next" id="qNext" onclick="nextQ()">Next</button></div></div></div>
+      <div class="completion-view" id="compView" style="display:none"><div class="completion-emoji">&#127754;</div><div class="completion-title">Reflection saved</div><div class="completion-text" id="compText"></div><button class="completion-done" onclick="resetAll()">Done</button></div>
+    </div>
+  </div>
+
+  <!-- ═══ INSIGHTS ═══ -->
+  <div class="page-content" id="pageInsights" style="display:none"><div class="page active insights-page">
+    <div class="glass-card"><div class="card-label">This Week</div><div class="insight-stat-grid"><div class="insight-stat" style="background:rgba(233,162,124,0.12)"><div class="stat-value" style="color:var(--peach)">Stable</div><div class="stat-label-text">Most common state</div></div><div class="insight-stat" style="background:rgba(140,182,188,0.12)"><div class="stat-value" style="color:var(--teal)">5</div><div class="stat-label-text">Days logged</div></div><div class="insight-stat" style="background:rgba(231,187,166,0.12)"><div class="stat-value" style="color:var(--blush)">C</div><div class="stat-label-text">Avg sleep response</div></div><div class="insight-stat" style="background:rgba(14,137,146,0.08)"><div class="stat-value" style="color:var(--teal)">B+</div><div class="stat-label-text">Energy trend</div></div></div></div>
+    <div class="glass-card"><div class="card-label">Mood State Over Time</div><div class="chart-container"><canvas id="moodChart" class="chart-canvas" height="180"></canvas></div><div class="chart-legend" id="moodLegend"></div></div>
+    <div class="glass-card"><div class="card-label">Survey Responses & Mood</div><div class="chart-container"><canvas id="corrChart" class="chart-canvas" height="220"></canvas></div><div class="chart-legend" id="corrLegend"></div></div>
+    <div class="glass-card"><div class="card-label">Gentle Insight</div><div class="card-subtitle" style="line-height:1.7;font-style:italic">On days you reported stable mood, your sleep and energy responses tended to cluster around C (balanced). Mid-week shifts towards hypomania corresponded with lower sleep quality and higher social activity.</div></div>
+  </div></div>
+
+  <!-- ═══ PRACTICES ═══ -->
+  <div class="page-content" id="pagePractices" style="display:none"><div class="page active practices-page">
+    <div class="glass-card" style="margin-bottom:12px"><div class="card-label">Guided Practices</div><div class="card-subtitle">Evidence-based techniques for self-regulation. Filtered to your current mood state when available.</div></div>
+    <div class="mood-filter" id="moodFilter"></div>
+    <div class="practices-grid" id="practicesGrid"></div>
+    <div style="height:16px"></div>
+  </div></div>
+
+  <!-- ═══ ABOUT ═══ -->
+  <div class="page-content" id="pageAbout" style="display:none"><div class="page active about-page">
+    <div class="glass-card"><div class="card-label">Understanding Bipolar</div><div class="card-subtitle" style="line-height:1.65">Bipolar disorder involves shifts in mood, energy, and activity levels that go beyond typical ups and downs. These states are not choices — they are part of a complex neurological condition.</div></div>
+    <div class="glass-card" style="padding:20px"><div class="card-label" style="margin-bottom:14px">Mood States</div>
+      <div class="state-card s-mania"><div class="state-name">Mania</div><div class="state-desc">Racing thoughts, high energy, reduced sleep, impulsivity, or euphoria.</div></div>
+      <div class="state-card s-hypomania"><div class="state-name">Hypomania</div><div class="state-desc">Elevated mood, good energy, more talkative and creative.</div></div>
+      <div class="state-card s-stable"><div class="state-name">Stable</div><div class="state-desc">Balanced mood, normal energy, clear thinking.</div></div>
+      <div class="state-card s-depression"><div class="state-name">Depression</div><div class="state-desc">Low mood, low energy, sleep changes, withdrawal.</div></div>
+    </div>
+    <div class="glass-card">
+      <div class="card-label">Living With Bipolar</div>
+      <div class="card-subtitle" style="margin-bottom:14px">The symptoms lists don't always capture the full picture. These are some of the quieter realities people live with every day.</div>
+      <div class="lived-carousel" id="livedCarousel">
+        <div class="lived-text" id="livedText"></div>
+      </div>
+    </div>
+    <div class="glass-card"><div class="info-banner"><span class="info-banner-icon">&#9825;</span><span class="info-banner-text">Soluna is not a diagnostic tool. If you're in crisis, please reach out to Samaritans (116 123) or your local emergency service.</span></div></div>
+  </div></div>
+
+  <!-- ═══ PRACTICE MODAL ═══ -->
+  <div class="modal-overlay" id="practiceModal">
+    <div class="modal-content">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div id="breathingSection" style="display:none">
+        <div class="breathing-container">
+          <div class="flower-wrap idle" id="flowerWrap">
+            <div class="breathing-oval"></div><div class="breathing-oval"></div><div class="breathing-oval"></div><div class="breathing-oval"></div><div class="breathing-oval"></div>
+          </div>
+          <div class="breath-prompt"><span class="breath-prompt-text" id="breathPromptText">Ready</span><span class="breath-counter" id="breathCounter"></span></div>
+        </div>
+        <div class="timer-section"><div class="timer-display" id="timerDisplay">03:00</div><input type="range" class="timer-slider" id="timerSlider" min="1" max="15" value="3" oninput="updateTimerDisplay()"><div class="timer-label" id="timerLabel">3 minutes</div></div>
+      </div>
+      <div id="steppedSection" style="display:none"><div class="steps-container" id="stepsContainer"></div></div>
+      <div id="journalSection" style="display:none">
+        <textarea class="journal-textarea" id="journalTextarea" placeholder="Let it all out. No rules, no judgment. Just write..."></textarea>
+        <button class="journal-entries-btn" id="journalEntriesBtn" onclick="togglePrevEntries()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+          Previous Entries
+        </button>
+        <div class="journal-prev-entries" id="journalPrevEntries" style="display:none"></div>
+      </div>
+      <div class="modal-controls" id="modalControls"><button class="modal-btn primary" id="modalStart" onclick="startPractice()">Start</button><button class="modal-btn secondary" onclick="closeModal()">Close</button></div>
+    </div>
+  </div>
+
+  <!-- ═══ NAV (4 tabs) ═══ -->
+  <nav class="nav-bar">
+    <div class="nav-item active" data-page="reflect" onclick="switchPage('reflect')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
+      <span class="nav-label">Reflect</span><div class="nav-dot"></div>
+    </div>
+    <div class="nav-item" data-page="insights" onclick="switchPage('insights')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+      <span class="nav-label">Insights</span><div class="nav-dot"></div>
+    </div>
+    <div class="nav-item" data-page="practices" onclick="switchPage('practices')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
+      <span class="nav-label">Practices</span><div class="nav-dot"></div>
+    </div>
+    <div class="nav-item" data-page="about" onclick="switchPage('about')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+      <span class="nav-label">About</span><div class="nav-dot"></div>
+    </div>
+  </nav>
+</div>
+
+<script>
+// ─── Date ───
+var now=new Date(),hour=now.getHours(),greet=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+document.getElementById('greeting').textContent=greet;
+document.getElementById('dateDisplay').textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+
+// ═══ PALETTE ═══
+var C={manic:'#E9A27C',hypomania:'#E7BBA6',stable:'#8CB6BC',depression:'#0D313A',teal:'#0E8992'};
+
+// ═══ MOOD STATES ═══
+var stateData={hypomania:{name:'Hypomania',desc:'Elevated mood, good energy, creative — milder than mania but still a shifted state.',color:C.hypomania},mania:{name:'Mania',desc:'Racing thoughts, high energy, impulsivity — everything feels amplified.',color:C.manic},stable:{name:'Stable',desc:'Balanced mood, steady energy — this is your stable ground.',color:C.stable},depression:{name:'Depression',desc:'Low energy, foggy thinking, withdrawal — even small things feel heavy.',color:C.depression}};
+var statePositions={hypomania:{x:.5,y:.06},mania:{x:.94,y:.5},stable:{x:.5,y:.94},depression:{x:.06,y:.5}};
+var selectedMood=null;
+
+function selectState(s){selectedMood=s;var d=stateData[s];document.querySelectorAll('.state-label').forEach(function(l){l.classList.remove('active')});document.querySelector('.state-label[data-state="'+s+'"]').classList.add('active');var n=document.getElementById('selectedName'),dd=document.getElementById('selectedDesc');n.textContent=d.name;n.style.color=d.color;n.style.opacity='1';dd.textContent=d.desc;dd.style.opacity='1';updateOrbColor(d.color);document.getElementById('continueBtn').classList.add('visible')}
+
+function updateOrbColor(hex){var lt=adjCol(hex,40),dk=adjCol(hex,-30),dkst=adjCol(hex,-50);document.querySelector('#orbGrad stop:nth-child(1)').setAttribute('stop-color',lt);document.querySelector('#orbGrad stop:nth-child(2)').setAttribute('stop-color',hex);document.querySelector('#orbGrad stop:nth-child(3)').setAttribute('stop-color',dk);document.querySelector('#orbDP stop:nth-child(1)').setAttribute('stop-color',dkst);document.querySelector('#orbDP stop:nth-child(2)').setAttribute('stop-color',dkst);document.querySelector('.orb-container').style.filter='drop-shadow(0 8px 28px '+hex+'44)'}
+function adjCol(hex,amt){var n=parseInt(hex.slice(1),16),r=Math.min(255,Math.max(0,(n>>16)+amt)),g=Math.min(255,Math.max(0,((n>>8)&0xFF)+amt)),b=Math.min(255,Math.max(0,(n&0xFF)+amt));return'#'+(1<<24|r<<16|g<<8|b).toString(16).slice(1)}
+
+// ═══ ORB DRAG ═══
+var orbEl=document.getElementById('orbContainer'),arenaEl=document.getElementById('orbArena'),isDrag=false,oX=0,oY=0;
+function gp(e){var t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY}}
+function sd(e){isDrag=true;var p=gp(e),r=orbEl.getBoundingClientRect();oX=p.x-(r.left+r.width/2);oY=p.y-(r.top+r.height/2);orbEl.style.transition='none';e.preventDefault()}
+function md(e){if(!isDrag)return;var p=gp(e),ar=arenaEl.getBoundingClientRect(),w=orbEl.offsetWidth,h=orbEl.offsetHeight;var nx=p.x-oX-ar.left,ny=p.y-oY-ar.top;nx=Math.max(w*.3,Math.min(ar.width-w*.3,nx));ny=Math.max(h*.3,Math.min(ar.height-h*.3,ny));orbEl.style.left=nx+'px';orbEl.style.top=ny+'px';orbEl.style.transform='translate(-50%,-50%)';var normX=nx/ar.width,normY=ny/ar.height,closest=null,best=Infinity;for(var s in statePositions){var sp=statePositions[s],dist=Math.sqrt(Math.pow(normX-sp.x,2)+Math.pow(normY-sp.y,2));if(dist<best){best=dist;closest=s}}if(best<.3&&closest!==selectedMood)selectState(closest);e.preventDefault()}
+function ed(){if(!isDrag)return;isDrag=false;if(selectedMood){var sp=statePositions[selectedMood],ar=arenaEl.getBoundingClientRect();var tx=.5+(sp.x-.5)*.35,ty=.5+(sp.y-.5)*.35;orbEl.style.transition='left .5s cubic-bezier(.34,1.56,.64,1),top .5s cubic-bezier(.34,1.56,.64,1)';orbEl.style.left=(tx*ar.width)+'px';orbEl.style.top=(ty*ar.height)+'px'}}
+orbEl.addEventListener('mousedown',sd);orbEl.addEventListener('touchstart',sd,{passive:false});document.addEventListener('mousemove',md);document.addEventListener('touchmove',md,{passive:false});document.addEventListener('mouseup',ed);document.addEventListener('touchend',ed);
+
+// ═══ QUESTIONNAIRE ═══
+var questions=[
+  {key:'sleep',num:'1',label:'Sleep Quality',text:'How much sleep did you get last night?',options:[{letter:'A',bg:C.manic,text:'Much more; still exhausted'},{letter:'B',bg:C.hypomania,text:'Slightly off; feel okay'},{letter:'C',bg:C.stable,text:'Normal amount; rested'},{letter:'D',bg:C.teal,text:'Very little; energetic'},{letter:'E',bg:C.depression,text:'No sleep; not tired'}]},
+  {key:'energy',num:'2',label:'Energy Levels',text:'How is your physical & mental energy today?',options:[{letter:'A',bg:C.manic,text:'Lethargic; everything\'s effort'},{letter:'B',bg:C.hypomania,text:'Low; unmotivated'},{letter:'C',bg:C.stable,text:'Balanced; steady'},{letter:'D',bg:C.teal,text:'High; restless'},{letter:'E',bg:C.depression,text:'Intense; vibrating energy'}]},
+  {key:'eating',num:'3',label:'Eating Behaviour',text:'How\'s your appetite today?',options:[{letter:'A',bg:C.manic,text:'No appetite; force eating'},{letter:'B',bg:C.hypomania,text:'Emotional eating'},{letter:'C',bg:C.stable,text:'Normal appetite'},{letter:'D',bg:C.teal,text:'Increased appetite'},{letter:'E',bg:C.depression,text:'Too busy to eat'}]},
+  {key:'productivity',num:'4',label:'Productivity & Focus',text:'How effective at tasks today?',options:[{letter:'A',bg:C.manic,text:'Paralyzed; can\'t start'},{letter:'B',bg:C.hypomania,text:'Distracted; struggling'},{letter:'C',bg:C.stable,text:'Steady; focused'},{letter:'D',bg:C.teal,text:'Over-productive'},{letter:'E',bg:C.depression,text:'Racing; jumping tasks'}]},
+  {key:'social',num:'5',label:'Social Activity',text:'How are you interacting?',options:[{letter:'A',bg:C.manic,text:'Withdrawn; avoiding contact'},{letter:'B',bg:C.hypomania,text:'Quiet; socially drained'},{letter:'C',bg:C.stable,text:'Balanced; comfortable'},{letter:'D',bg:C.teal,text:'Very talkative'},{letter:'E',bg:C.depression,text:'Over-social; contacting everyone'}]},
+  {key:'finances',num:'6',label:'Finances & Spending',text:'How\'s your spending today?',options:[{letter:'A',bg:C.manic,text:'Not spending; neglecting needs'},{letter:'B',bg:C.hypomania,text:'Frugal; cautious'},{letter:'C',bg:C.stable,text:'Normal; on budget'},{letter:'D',bg:C.teal,text:'Impulsive buys'},{letter:'E',bg:C.depression,text:'Excessive; grand spending'}]}
+];
+var curQ=0,qAns={};
+function startQuestions(){document.getElementById('orbView').style.display='none';var qf=document.getElementById('questionFlow');qf.style.display='flex';qf.style.animation='none';qf.offsetHeight;qf.style.animation='cardIn .5s ease both';curQ=0;renderQ()}
+function renderQ(){var q=questions[curQ],prog=document.getElementById('qProgress');prog.innerHTML='';questions.forEach(function(_,i){var d=document.createElement('div');d.className='progress-dot'+(i<curQ?' filled':'')+(i===curQ?' current':'');prog.appendChild(d)});document.getElementById('qLabel').textContent=q.label;document.getElementById('qNum').textContent='Question '+q.num+' of 6';document.getElementById('qText').textContent=q.text;var o=document.getElementById('qOpts');o.innerHTML='';q.options.forEach(function(opt){var p=document.createElement('div');p.className='q-pill'+(qAns[q.key]===opt.letter?' selected':'');p.innerHTML='<span class="q-letter" style="background:'+opt.bg+'">'+opt.letter+'</span><span class="q-pill-text">'+opt.text+'</span>';p.addEventListener('click',function(){o.querySelectorAll('.q-pill').forEach(function(x){x.classList.remove('selected')});p.classList.add('selected');qAns[q.key]=opt.letter;document.getElementById('qNext').classList.add('enabled')});o.appendChild(p)});document.getElementById('qBack').style.visibility=curQ===0?'hidden':'visible';var nb=document.getElementById('qNext');nb.textContent=curQ===questions.length-1?'Finish':'Next';nb.classList.toggle('enabled',!!qAns[q.key]);var card=document.getElementById('qCard');card.style.animation='none';card.offsetHeight;card.style.animation='cardIn .35s ease both'}
+function nextQ(){if(!qAns[questions[curQ].key])return;if(curQ<questions.length-1){curQ++;renderQ()}else showComp()}
+function prevQ(){if(curQ>0){curQ--;renderQ()}else{document.getElementById('questionFlow').style.display='none';document.getElementById('orbView').style.display='flex'}}
+function showComp(){document.getElementById('questionFlow').style.display='none';var c=document.getElementById('compView');c.style.display='flex';c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .6s ease both';var msgs=['Thank you for checking in. Every reflection is a small act of self-care.','You showed up for yourself today. That matters more than you might think.','There are no wrong answers here — only honest ones. Well done.','Noticing how you feel is the first step towards understanding your patterns.'];document.getElementById('compText').textContent=msgs[Math.floor(Math.random()*msgs.length)]}
+function resetAll(){document.getElementById('compView').style.display='none';document.getElementById('orbView').style.display='flex';selectedMood=null;Object.keys(qAns).forEach(function(k){delete qAns[k]});curQ=0;document.querySelectorAll('.state-label').forEach(function(l){l.classList.remove('active')});document.getElementById('selectedName').style.opacity='0';document.getElementById('selectedDesc').style.opacity='0';document.getElementById('continueBtn').classList.remove('visible');orbEl.style.transition='all .5s ease';orbEl.style.left='50%';orbEl.style.top='50%';updateOrbColor('#8CB6BC')}
+
+// ═══ PAGE SWITCHING ═══
+var pages={reflect:document.getElementById('pageReflect'),insights:document.getElementById('pageInsights'),practices:document.getElementById('pagePractices'),about:document.getElementById('pageAbout')};
+var hTexts={reflect:greet,insights:'Your Insights',practices:'Guided Practices',about:'About Bipolar'};
+function switchPage(n){Object.values(pages).forEach(function(p){p.style.display='none'});pages[n].style.display='block';pages[n].scrollTop=0;document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});document.querySelector('.nav-item[data-page="'+n+'"]').classList.add('active');document.getElementById('greeting').textContent=hTexts[n];pages[n].querySelectorAll('.glass-card').forEach(function(c,i){c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .5s ease '+(i*.08)+'s both'});if(n==='insights')setTimeout(drawCharts,100);if(n==='practices')renderPractices();if(n==='about')setTimeout(startLivedCarousel,300)}
+
+// ═══ CHARTS ═══
+var sampleDays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+// Y-axis: 0=Depression, 1=Stable, 2=Hypomania, 3=Mania
+var sampleMoods=[1,1,2,1,3,2,1];
+var moodLabels=['Depression','Stable','Hypomania','Mania'];
+var moodColors=[C.depression,C.stable,C.hypomania,C.manic];
+var sampleSurvey={sleep:[2,2,1,2,2,3,2],energy:[2,2,3,2,1,3,2],eating:[2,1,2,2,3,2,2],productivity:[2,2,1,2,3,2,2],social:[2,1,3,2,2,3,2],finances:[2,2,2,1,3,2,2]};
+
+function drawCharts(){drawMoodChart();drawCorrChart()}
+function drawMoodChart(){var canvas=document.getElementById('moodChart'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;canvas.width=canvas.offsetWidth*dpr;canvas.height=180*dpr;ctx.scale(dpr,dpr);var W=canvas.offsetWidth,H=180,pad={t:20,r:16,b:30,l:10},cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);ctx.strokeStyle='rgba(140,182,188,0.15)';ctx.lineWidth=1;for(var i=0;i<4;i++){var gy=pad.t+cH-(i/3)*cH;ctx.beginPath();ctx.moveTo(pad.l,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}ctx.beginPath();ctx.strokeStyle=C.teal;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.lineCap='round';sampleMoods.forEach(function(v,i){var x=pad.l+(i/(sampleDays.length-1))*cW,y=pad.t+cH-(v/3)*cH;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();ctx.lineTo(pad.l+cW,pad.t+cH);ctx.lineTo(pad.l,pad.t+cH);ctx.closePath();var grad=ctx.createLinearGradient(0,pad.t,0,H);grad.addColorStop(0,'rgba(14,137,146,0.15)');grad.addColorStop(1,'rgba(14,137,146,0)');ctx.fillStyle=grad;ctx.fill();sampleMoods.forEach(function(v,i){var x=pad.l+(i/(sampleDays.length-1))*cW,y=pad.t+cH-(v/3)*cH;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle=moodColors[v];ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke()});ctx.fillStyle='rgba(13,49,58,0.4)';ctx.font='300 10px Outfit';ctx.textAlign='center';sampleDays.forEach(function(d,i){var x=pad.l+(i/(sampleDays.length-1))*cW;ctx.fillText(d,x,H-8)});var leg=document.getElementById('moodLegend');leg.innerHTML='';moodLabels.forEach(function(l,i){leg.innerHTML+='<div class="legend-item"><div class="legend-dot" style="background:'+moodColors[i]+'"></div>'+l+'</div>'})}
+
+function drawCorrChart(){var canvas=document.getElementById('corrChart'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;canvas.width=canvas.offsetWidth*dpr;canvas.height=220*dpr;ctx.scale(dpr,dpr);var W=canvas.offsetWidth,H=220,pad={t:16,r:12,b:30,l:10},cats=Object.keys(sampleSurvey),barW=(W-pad.l-pad.r)/7,cH=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);var catColors=[C.manic,C.hypomania,C.stable,C.teal,'#5a8a8f',C.depression],catLabels=['Sleep','Energy','Eating','Focus','Social','Finance'];sampleDays.forEach(function(day,di){var x=pad.l+di*barW+barW*.15,bw=barW*.7;cats.forEach(function(cat,ci){var val=sampleSurvey[cat][di],segH=(val/4)*cH*.15,y0=pad.t+ci*(cH/6)+((cH/6)-segH)/2;ctx.fillStyle=catColors[ci];ctx.globalAlpha=.25+val*.15;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y0,bw,segH,3);else{ctx.rect(x,y0,bw,segH)}ctx.fill()});ctx.globalAlpha=1;var dotY=H-pad.b+10;ctx.beginPath();ctx.arc(x+barW*.7/2,dotY,4,0,Math.PI*2);ctx.fillStyle=moodColors[sampleMoods[di]];ctx.fill();ctx.fillStyle='rgba(13,49,58,0.4)';ctx.font='300 10px Outfit';ctx.textAlign='center';ctx.fillText(day,x+barW*.7/2,H-4)});ctx.textAlign='left';ctx.font='300 9px Outfit';ctx.fillStyle='rgba(13,49,58,0.45)';catLabels.forEach(function(l,i){ctx.fillText(l,pad.l,pad.t+i*(cH/6)+cH/12+3)});var leg=document.getElementById('corrLegend');leg.innerHTML='';catLabels.forEach(function(l,i){leg.innerHTML+='<div class="legend-item"><div class="legend-dot" style="background:'+catColors[i]+'"></div>'+l+'</div>'});leg.innerHTML+='<div class="legend-item" style="margin-left:6px;padding-left:6px;border-left:1px solid rgba(0,0,0,0.1)">&#9679; = mood state</div>'}
+
+// ═══ PRACTICES ═══
+var practices=[
+  {id:'breathing',title:'Guided Breathing',icon:'breath',mood:'all',description:'The 4-7-8 technique: inhale for 4, hold for 7, exhale for 8. Activates your parasympathetic nervous system.',type:'breathing',badges:['All States'],badgeClass:['badge-all']},
+  {id:'grounding',title:'5-4-3-2-1 Grounding',icon:'compass',mood:'manic',description:'Use your senses to anchor yourself in the present moment.',type:'stepped',badges:['Manic'],badgeClass:['badge-manic'],steps:[{t:'5 things you can see',d:'Look around slowly. Name 5 things you can see right now.'},{t:'4 things you can touch',d:'Reach out and feel 4 different textures around you.'},{t:'3 things you can hear',d:'Close your eyes. Identify 3 distinct sounds.'},{t:'2 things you can smell',d:'Notice 2 scents — your clothes, the air, nearby objects.'},{t:'1 thing you can taste',d:'Focus on one taste in your mouth, or take a sip of water.'}]},
+  {id:'bodyscan',title:'Gentle Body Scan',icon:'body',mood:'depressed',description:'A slow, compassionate scan from head to toe — noticing without judgment.',type:'stepped',badges:['Depressed'],badgeClass:['badge-depressed'],steps:[{t:'Settle in',d:'Find a comfortable position. Close your eyes if that feels safe.'},{t:'Top of head',d:'Bring attention to your scalp and forehead. Notice any tension.'},{t:'Face & jaw',d:'Soften your jaw. Relax your eyes and cheeks.'},{t:'Shoulders & arms',d:'Let your shoulders drop. Feel the weight of your arms.'},{t:'Chest & belly',d:'Notice your breath here. No need to change it.'},{t:'Hips & legs',d:'Feel the support beneath you. Let your legs be heavy.'},{t:'Feet & toes',d:'Wiggle your toes gently. Feel the ground beneath you.'}]},
+  {id:'coldwater',title:'Cold Water Immersion',icon:'droplet',mood:'manic',description:'A quick sensory reset using cold water on your wrists or face.',type:'stepped',badges:['Manic'],badgeClass:['badge-manic'],steps:[{t:'Prepare',d:'Run cold water or get a bowl of cool water ready.'},{t:'Wrists first',d:'Hold your wrists under the cold water for 30 seconds.'},{t:'Face splash',d:'Gently splash cold water on your face 3\u20135 times.'},{t:'Notice',d:'Pay attention to the sensation. Let it ground you.'}]},
+  {id:'boxbreathing',title:'Box Breathing',icon:'square',mood:'depressed',description:'The 4-4-4-4 square pattern used by Navy SEALs. Equal inhale, hold, exhale, hold to steady your system.',type:'breathing',badges:['Depressed'],badgeClass:['badge-depressed']},
+  {id:'walking',title:'Walking Meditation',icon:'footsteps',mood:'manic',description:'Slow, deliberate steps with full attention on each movement.',type:'stepped',badges:['Manic'],badgeClass:['badge-manic'],steps:[{t:'Stand still',d:'Feel both feet flat on the ground. Find your balance.'},{t:'First steps',d:'Lift one foot slowly. Place it down heel first. Feel the transfer.'},{t:'Rhythm',d:'Continue slowly \u2014 lift, move, place. One foot at a time.'},{t:'Breath sync',d:'Match your breath to your steps. Inhale on lift, exhale on place.'},{t:'Return',d:'After a few minutes, stand still again. Notice how you feel.'}]},
+  {id:'selfcare',title:'Ritual Self-Care',icon:'heart',mood:'depressed',description:'Gentle prompts for basic self-care when everything feels too hard.',type:'stepped',badges:['Depressed'],badgeClass:['badge-depressed'],steps:[{t:'Water',d:'Drink a glass of water. Room temperature is fine.'},{t:'Warmth',d:'Wrap yourself in something warm \u2014 a blanket, a hoodie, a scarf.'},{t:'Face',d:'Wash your face or apply moisturiser. Feel the touch on your skin.'},{t:'Rest',d:'Lie down for 5 minutes. You don\'t need to sleep \u2014 just rest.'}]},
+  {id:'braindump',title:'Brain Dump Journal',icon:'pencil',mood:'manic',description:'Get racing thoughts out of your head. Write freely — no rules, no judgment.',type:'journal',badges:['Manic'],badgeClass:['badge-manic']}
+];
+
+// SVG icons for practices (stroke-based, matching nav style)
+var practiceIcons={
+  breath:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>',
+  compass:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="none"/></svg>',
+  body:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v8M8 21l4-5 4 5M6 13h12"/></svg>',
+  droplet:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
+  square:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>',
+  footsteps:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5V16"/><path d="M14 8v2.38c0 2.12 1.03 3.12 1 5.62-.03 2.72-1.49 6-4.5 6C8.63 22 8 20.2 8 18.5V8"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+  pencil:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>'
+};
+
+var currentMoodFilter='all',currentPracticeId=null,practiceTimer=null,breathPhaseTimer=null,timerRunning=false,currentStep=0;
+
+function renderPractices(){
+  var filterEl=document.getElementById('moodFilter');filterEl.innerHTML='';
+  var filters=[{key:'all',label:'All Practices'},{key:'manic',label:'Manic State'},{key:'depressed',label:'Depressed State'},{key:'stable',label:'Stable & Preventive'}];
+  filters.forEach(function(f){var btn=document.createElement('button');btn.className='filter-btn'+(currentMoodFilter===f.key?' active':'');btn.textContent=f.label;btn.onclick=function(){currentMoodFilter=f.key;renderPractices()};filterEl.appendChild(btn)});
+
+  if(selectedMood&&currentMoodFilter==='all'){
+    if(selectedMood==='mania'||selectedMood==='hypomania')currentMoodFilter='manic';
+    else if(selectedMood==='depression')currentMoodFilter='depressed';
+    else currentMoodFilter='stable';
+    filterEl.querySelectorAll('.filter-btn').forEach(function(b,i){b.classList.remove('active');if(filters[i].key===currentMoodFilter)b.classList.add('active')});
+  }
+
+  var grid=document.getElementById('practicesGrid');grid.innerHTML='';
+  practices.forEach(function(p,idx){
+    var show=currentMoodFilter==='all'||p.mood==='all'||p.mood===currentMoodFilter||(currentMoodFilter==='stable'&&p.mood==='all');
+    var card=document.createElement('div');card.className='practice-card'+(show?'':' dimmed');card.style.animationDelay=(idx*.06)+'s';
+    var badgesHtml=p.badges.map(function(b,i){return'<span class="practice-badge '+p.badgeClass[i]+'">'+b+'</span>'}).join('');
+    var iconHtml=practiceIcons[p.icon]||'';
+    card.innerHTML='<div class="practice-header"><div class="practice-icon">'+iconHtml+'</div><div class="practice-title">'+p.title+'</div></div><div class="practice-desc">'+p.description+'</div><div class="practice-footer"><div class="practice-badges">'+badgesHtml+'</div></div>';
+    // Create button with addEventListener (not innerHTML onclick)
+    var tryBtn=document.createElement('button');
+    tryBtn.className='practice-try';
+    tryBtn.textContent='Try Now';
+    (function(practiceId){
+      tryBtn.addEventListener('click',function(e){e.stopPropagation();openModal(practiceId)});
+    })(p.id);
+    card.querySelector('.practice-footer').appendChild(tryBtn);
+    grid.appendChild(card);
+  });
+}
+
+// ═══ MODAL ═══
+function openModal(id){
+  currentPracticeId=id;currentStep=0;timerRunning=false;clearInterval(practiceTimer);clearInterval(breathPhaseTimer);
+  var p=practices.find(function(x){return x.id===id});
+  document.getElementById('modalTitle').textContent=p.title;
+  document.getElementById('modalDesc').textContent=p.description;
+  var bs=document.getElementById('breathingSection'),ss=document.getElementById('steppedSection'),js=document.getElementById('journalSection');
+  bs.style.display='none';ss.style.display='none';js.style.display='none';
+  var fw=document.getElementById('flowerWrap');fw.className='flower-wrap idle';
+  document.getElementById('breathPromptText').textContent='Ready';
+  document.getElementById('breathCounter').textContent='';
+  if(p.type==='breathing'){bs.style.display='block';document.getElementById('timerSlider').value=3;updateTimerDisplay()}
+  else if(p.type==='journal'){js.style.display='block';openJournal()}
+  else{ss.style.display='block';renderSteps(p.steps)}
+  var startBtn=document.getElementById('modalStart');startBtn.style.opacity='1';startBtn.style.pointerEvents='auto';
+  if(p.type==='journal'){startBtn.textContent='Save Entry';startBtn.onclick=function(){if(saveJournalEntry()){closeModal()}}}
+  else{startBtn.textContent='Start';startBtn.onclick=startPractice}
+  document.getElementById('practiceModal').classList.add('show');
+}
+
+function closeModal(){document.getElementById('practiceModal').classList.remove('show');clearInterval(practiceTimer);clearInterval(breathPhaseTimer);timerRunning=false;var fw=document.getElementById('flowerWrap');if(fw)fw.className='flower-wrap idle'}
+
+function updateTimerDisplay(){var v=document.getElementById('timerSlider').value;document.getElementById('timerDisplay').textContent=String(v).padStart(2,'0')+':00';document.getElementById('timerLabel').textContent=v+' minute'+(v>1?'s':'')}
+
+function startPractice(){
+  var p=practices.find(function(x){return x.id===currentPracticeId});
+  if(p.type==='breathing')startBreathing(p.id);else startStepped(p.steps);
+}
+
+// ═══ BREATHING ENGINE — synced flower + counter ═══
+var breathPhaseTimer=null;
+
+function startBreathing(practiceId){
+  if(timerRunning)return;timerRunning=true;
+  var totalSecs=parseInt(document.getElementById('timerSlider').value)*60;
+  var promptEl=document.getElementById('breathPromptText');
+  var counterEl=document.getElementById('breathCounter');
+  var flowerEl=document.getElementById('flowerWrap');
+  var startBtn=document.getElementById('modalStart');
+  startBtn.textContent='Running...';startBtn.style.opacity='.5';startBtn.style.pointerEvents='none';
+
+  // Breathing patterns
+  var phases,durations;
+  if(practiceId==='boxbreathing'){
+    // Box: 4-4-4-4
+    phases=['Breathe In','Hold','Breathe Out','Hold'];
+    durations=[4,4,4,4];
+  } else {
+    // Guided: 4-7-8
+    phases=['Breathe In','Hold','Breathe Out'];
+    durations=[4,7,8];
+  }
+  var flowerClasses=['inhale','hold-full','exhale','hold-empty'];
+  // Map phases to flower states
+  var phaseToFlower;
+  if(practiceId==='boxbreathing'){
+    phaseToFlower=[0,1,2,3]; // inhale, hold-full, exhale, hold-empty
+  } else {
+    phaseToFlower=[0,1,2]; // inhale, hold-full, exhale
+  }
+
+  var phaseIdx=0,phaseCountdown=durations[0];
+
+  // Set transition duration to match current phase
+  function setFlowerTransition(dur){flowerEl.style.transitionDuration=dur+'s'}
+
+  // Start first phase
+  setFlowerTransition(durations[0]);
+  flowerEl.className='flower-wrap '+flowerClasses[phaseToFlower[0]];
+  promptEl.textContent=phases[0];
+  counterEl.textContent=phaseCountdown;
+
+  // Phase tick — every second
+  breathPhaseTimer=setInterval(function(){
+    phaseCountdown--;
+    if(phaseCountdown>0){
+      counterEl.textContent=phaseCountdown;
+    } else {
+      // Move to next phase
+      phaseIdx=(phaseIdx+1)%phases.length;
+      phaseCountdown=durations[phaseIdx];
+      setFlowerTransition(durations[phaseIdx]);
+      flowerEl.className='flower-wrap '+flowerClasses[phaseToFlower[phaseIdx]];
+      promptEl.textContent=phases[phaseIdx];
+      counterEl.textContent=phaseCountdown;
+    }
+  },1000);
+
+  // Main countdown timer
+  practiceTimer=setInterval(function(){
+    totalSecs--;
+    var m=Math.floor(totalSecs/60),s=totalSecs%60;
+    document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    if(totalSecs<=0){
+      clearInterval(practiceTimer);clearInterval(breathPhaseTimer);timerRunning=false;
+      flowerEl.className='flower-wrap idle';
+      promptEl.textContent='Complete';counterEl.textContent='';
+      startBtn.textContent='Done';startBtn.style.opacity='1';startBtn.style.pointerEvents='auto';startBtn.onclick=closeModal;
+    }
+  },1000);
+}
+
+// ═══ STEPPED PRACTICES ═══
+function renderSteps(steps){
+  var container=document.getElementById('stepsContainer');container.innerHTML='';
+  steps.forEach(function(s,i){
+    var div=document.createElement('div');div.className='practice-step'+(i===0?' active':'');div.id='step-'+i;
+    div.innerHTML='<div class="step-header"><div class="step-num">'+(i+1)+'</div><div class="step-title">'+s.t+'</div></div><div class="step-text">'+s.d+'</div>';
+    container.appendChild(div);
+  });
+}
+
+function startStepped(steps){
+  currentStep=0;
+  // Reset all steps
+  steps.forEach(function(_,i){var el=document.getElementById('step-'+i);el.classList.remove('active','done')});
+  highlightStep(0);
+  var startBtn=document.getElementById('modalStart');
+  startBtn.textContent='Next Step';
+  startBtn.onclick=function(){
+    if(currentStep<steps.length-1){
+      document.getElementById('step-'+currentStep).classList.remove('active');
+      document.getElementById('step-'+currentStep).classList.add('done');
+      currentStep++;
+      highlightStep(currentStep);
+      document.getElementById('step-'+currentStep).scrollIntoView({behavior:'smooth',block:'nearest'});
+      if(currentStep===steps.length-1)startBtn.textContent='Finish';
+    } else {
+      document.getElementById('step-'+currentStep).classList.remove('active');
+      document.getElementById('step-'+currentStep).classList.add('done');
+      startBtn.textContent='Complete \u2713';startBtn.onclick=closeModal;
+    }
+  };
+}
+
+function highlightStep(i){document.getElementById('step-'+i).classList.add('active')}
+
+// ═══ JOURNAL ═══
+var journalEntries=JSON.parse(localStorage.getItem('soluna_journal')||'[]');
+
+function openJournal(){
+  document.getElementById('journalTextarea').value='';
+  document.getElementById('journalPrevEntries').style.display='none';
+  renderPrevEntries();
+}
+
+function saveJournalEntry(){
+  var text=document.getElementById('journalTextarea').value.trim();
+  if(!text)return false;
+  journalEntries.unshift({date:new Date().toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),text:text});
+  try{localStorage.setItem('soluna_journal',JSON.stringify(journalEntries))}catch(e){}
+  return true;
+}
+
+function renderPrevEntries(){
+  var container=document.getElementById('journalPrevEntries');container.innerHTML='';
+  if(journalEntries.length===0){container.innerHTML='<div style="text-align:center;padding:16px;font-weight:300;font-size:12px;color:rgba(13,49,58,0.4);font-style:italic">No entries yet. Your first brain dump will appear here.</div>';return}
+  journalEntries.forEach(function(e){
+    var div=document.createElement('div');div.className='journal-entry-item';
+    div.innerHTML='<div class="journal-entry-date">'+e.date+'</div><div class="journal-entry-text">'+e.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
+    container.appendChild(div);
+  });
+}
+
+function togglePrevEntries(){
+  var el=document.getElementById('journalPrevEntries');
+  if(el.style.display==='none'){el.style.display='block';renderPrevEntries()}else{el.style.display='none'}
+}
+
+// ═══ LIVED EXPERIENCE CAROUSEL ═══
+var livedStatements=[
+  'Mourning the person you were before diagnosis — and learning to grieve versions of yourself that episodes took away.',
+  'Not trusting your own happiness because it might be hypomania.',
+  'The exhaustion of constantly monitoring yourself — am I okay, or am I starting an episode?',
+  'Losing friendships because people don\'t understand why you disappeared for weeks.',
+  'Feeling like a burden on the people who love you most.',
+  'The medication side effects nobody warns you about — weight gain, brain fog, emotional numbness.',
+  'Having a good day and immediately wondering how long it will last.',
+  'Rebuilding your life after a manic episode — the debts, the messages, the damage.',
+  'Being told you\'re "too much" or "too sensitive" when you\'re just trying to exist.',
+  'The guilt of knowing your illness affects the people around you.',
+  'Needing routine to stay stable but craving the intensity that mania brings.',
+  'Explaining to employers why you have gaps in your CV without revealing everything.',
+  'The loneliness of being in a room full of people who have no idea what\'s happening inside your head.',
+  'Forgetting what your baseline actually feels like.',
+  'Achieving something meaningful and not knowing if it was you or the hypomania.'
+];
+var livedIdx=0,livedTimer=null;
+
+function startLivedCarousel(){
+  var el=document.getElementById('livedText');if(!el)return;
+  clearInterval(livedTimer);
+  livedIdx=Math.floor(Math.random()*livedStatements.length);
+  showLivedStatement();
+  livedTimer=setInterval(cycleLivedStatement,5500);
+}
+
+function showLivedStatement(){
+  var el=document.getElementById('livedText');
+  el.className='lived-text enter-right';
+  el.textContent=livedStatements[livedIdx];
+  requestAnimationFrame(function(){requestAnimationFrame(function(){el.className='lived-text visible'})});
+}
+
+function cycleLivedStatement(){
+  var el=document.getElementById('livedText');
+  el.className='lived-text exit-left';
+  setTimeout(function(){
+    livedIdx=(livedIdx+1)%livedStatements.length;
+    showLivedStatement();
+  },800);
+}
+
+// Init practices on load
+renderPractices();
+</script>
+</body>
+</html>
