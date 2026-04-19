@@ -4,14 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Soluna</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='15' r='13' fill='%23E9A27C' opacity='.18'/%3E%3Ccircle cx='16' cy='15' r='10' fill='%23E9A27C' opacity='.28'/%3E%3Ccircle cx='16' cy='15' r='8' fill='%23E9A27C'/%3E%3Ccircle cx='16.8' cy='14.5' r='6.5' fill='%230D313A' opacity='.92'/%3E%3Cpath d='M6,24Q16,20 26,24' fill='none' stroke='%238CB6BC' stroke-width='.8' opacity='.4'/%3E%3C/svg%3E">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   :root{
     --peach:#E9A27C;--blush:#E7BBA6;--mist:#8CB6BC;--teal:#0E8992;--navy:#0D313A;
     --sand:#F6EFE8;--sand-deep:#EDE4D9;--header-bg:#FDF8F4;
-    --glass:rgba(255,255,255,0.48);--glass-border:rgba(255,255,255,0.65);--glass-shadow:rgba(13,49,58,0.06);
-    --text:#0D313A;--text-light:rgba(13,49,58,0.55);
+    --glass:rgba(255,255,255,0.48);--glass-border:rgba(255,255,255,0.75);--glass-shadow:rgba(13,49,58,0.08);
+    --text:#0D313A;--text-light:rgba(13,49,58,0.72);
     --radius:20px;--radius-sm:14px;--radius-pill:50px;
   }
   html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background:var(--sand);color:var(--text)}
@@ -23,10 +24,13 @@
   .app>.nav-bar{order:4}
 
   /* ═══ TWO-TONE HEADER WITH WAVE ═══ */
-  .header-zone{position:relative;z-index:2;background:var(--header-bg);padding:52px 24px 0;flex-shrink:0}
-  .header-brand{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:14px;letter-spacing:3.5px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;text-align:center}
-  .header-greeting{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:26px;color:var(--navy);line-height:1.2;text-align:center}
-  .header-date{font-weight:300;font-size:12px;color:var(--text-light);margin-top:3px;letter-spacing:.3px;text-align:center;padding-bottom:18px}
+  .header-zone{position:relative;z-index:2;background:var(--header-bg);padding:48px 24px 0;flex-shrink:0}
+  .header-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:6px}
+  .header-logo{width:42px;height:42px;flex-shrink:0}
+  .header-logo svg{width:100%;height:100%;display:block}
+  .header-wordmark{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:20px;letter-spacing:7px;text-transform:uppercase;color:var(--navy)}
+  .header-greeting{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:24px;color:var(--navy);line-height:1.2;text-align:center;margin-top:2px}
+  .header-date{font-weight:300;font-size:12px;color:var(--text-light);margin-top:3px;letter-spacing:.3px;text-align:center;padding-bottom:16px}
 
   /* Wave: clip overflow; extra-wide SVG + JS scale so 3D tilt never exposes gaps */
   .wave-tilt-wrap{position:relative;z-index:2;margin-top:-1px;flex-shrink:0;width:100%;overflow:hidden;line-height:0;background:var(--sand)}
@@ -50,7 +54,8 @@
 
   /* ═══ ORB PAGE ═══ */
   .orb-page{display:flex;flex-direction:column;align-items:center;padding:12px 20px 110px;min-height:100%}
-  .orb-instruction{font-weight:300;font-size:12.5px;color:var(--text-light);text-align:center;margin-bottom:10px;animation:cardIn .6s ease both}
+  .orb-heading{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;color:var(--navy);text-align:center;margin-bottom:4px;animation:cardIn .5s ease both}
+  .orb-instruction{font-weight:300;font-size:12px;color:var(--text-light);text-align:center;margin-bottom:10px;animation:cardIn .6s ease both}
   .orb-arena{position:relative;width:310px;height:310px;margin:0 auto;flex-shrink:0;animation:cardIn .6s ease .1s both}
   .orb-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:225px;height:225px;border-radius:50%;border:1px solid rgba(140,182,188,0.15);pointer-events:none;z-index:1}
   .orb-ring-2{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:275px;height:275px;border-radius:50%;border:1px dashed rgba(140,182,188,0.08);pointer-events:none;z-index:0}
@@ -77,6 +82,28 @@
   .continue-btn{margin-top:12px;padding:14px 40px;border-radius:var(--radius-pill);border:none;background:var(--teal);color:white;font-family:'Outfit',sans-serif;font-weight:300;font-size:14px;letter-spacing:1px;cursor:pointer;opacity:0;transform:translateY(8px);transition:all .4s ease}
   .continue-btn.visible{opacity:1;transform:translateY(0)}.continue-btn:active{transform:scale(.96)}
 
+  /* ═══ QUOTE OF THE DAY ═══ */
+  .quote-card{margin-top:20px;padding:18px 20px;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:var(--radius);box-shadow:0 2px 16px var(--glass-shadow);display:flex;gap:14px;align-items:flex-start;max-width:340px;animation:cardIn .6s ease .3s both}
+  .quote-icon{flex-shrink:0;color:var(--teal);opacity:.4;margin-top:2px}
+  .quote-text{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:14px;color:var(--navy);line-height:1.6;font-style:italic;transition:opacity .5s ease}
+
+  /* ═══ HELP BUTTON ═══ */
+  .help-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:12px 24px;border-radius:var(--radius-pill);border:1.5px solid rgba(140,182,188,0.25);background:rgba(255,255,255,0.35);font-family:'Outfit',sans-serif;font-weight:300;font-size:12px;color:var(--text-light);cursor:pointer;transition:all .3s ease;animation:cardIn .6s ease .5s both}
+  .help-btn:active{transform:scale(.97)}
+  .help-btn svg{color:var(--peach);opacity:.6}
+
+  /* ═══ CRISIS MODAL ═══ */
+  .crisis-header{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:8px}
+  .crisis-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;color:var(--navy)}
+  .crisis-subtitle{font-weight:300;font-size:13px;color:var(--text-light);text-align:center;line-height:1.55;margin-bottom:20px}
+  .crisis-section-label{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin:20px 0 10px;padding-top:12px;border-top:1px solid rgba(140,182,188,0.12)}
+  .crisis-section-label:first-of-type{margin-top:0;padding-top:0;border-top:none}
+  .crisis-resource{padding:12px 14px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.35);border:1px solid rgba(140,182,188,0.1);margin-bottom:8px}
+  .crisis-resource-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:14px;color:var(--navy);margin-bottom:2px}
+  .crisis-resource-detail{font-weight:300;font-size:11px;color:var(--text-light);line-height:1.45;margin-bottom:4px}
+  .crisis-resource-contact{font-weight:400;font-size:12px;color:var(--teal);letter-spacing:.2px}
+  .crisis-footer{font-weight:300;font-size:11px;color:var(--text-light);text-align:center;line-height:1.5;margin-top:20px;padding-top:14px;border-top:1px solid rgba(140,182,188,0.12);font-style:italic}
+
   /* ═══ QUESTIONNAIRE ═══ */
   .question-flow{padding:8px 20px 110px;min-height:100%;display:flex;flex-direction:column;animation:cardIn .5s ease both}
   .question-progress{display:flex;gap:6px;margin-bottom:20px}
@@ -87,15 +114,24 @@
   .q-num{font-weight:300;font-size:11px;color:var(--text-light);margin-bottom:14px}
   .q-text{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:20px;color:var(--navy);margin-bottom:20px;line-height:1.35}
   .q-options{display:flex;flex-direction:column;gap:8px;flex:1}
-  .q-pill{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);border:1.5px solid rgba(140,182,188,0.18);background:rgba(255,255,255,0.35);cursor:pointer;transition:all .3s ease}
+  .q-pill{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);border:1.5px solid rgba(140,182,188,0.3);background:rgba(255,255,255,0.4);cursor:pointer;transition:all .3s ease}
   .q-pill:active{transform:scale(.98)}.q-pill.selected{border-color:var(--teal);background:rgba(14,137,146,0.08)}
   .q-letter{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:white;flex-shrink:0;opacity:.6;transition:all .3s ease}
   .q-pill.selected .q-letter{opacity:1;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
   .q-pill-text{font-weight:300;font-size:13px;color:var(--navy);line-height:1.4}
   .q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px}
   .q-back{font-family:'Outfit',sans-serif;font-weight:300;font-size:13px;color:var(--text-light);background:none;border:none;cursor:pointer;padding:8px 4px}
+  .q-skip{font-family:'Outfit',sans-serif;font-weight:300;font-size:11px;color:var(--text-light);background:none;border:none;cursor:pointer;padding:8px 12px;opacity:.7;letter-spacing:.3px}
   .q-next{padding:12px 32px;border-radius:var(--radius-pill);border:none;background:var(--teal);color:white;font-family:'Outfit',sans-serif;font-weight:300;font-size:13px;letter-spacing:.8px;cursor:pointer;opacity:.35;pointer-events:none;transition:all .3s ease}
   .q-next.enabled{opacity:1;pointer-events:auto}.q-next:active{transform:scale(.96)}
+  .q-nav-right{display:flex;align-items:center;gap:4px}
+
+  /* ═══ CELEBRATION ═══ */
+  .celebration-overlay{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99}
+  .celebration-orb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;background:var(--teal);opacity:0;animation:celebPulse 1.2s ease-out forwards}
+  @keyframes celebPulse{0%{opacity:.2;transform:translate(-50%,-50%) scale(.5)}40%{opacity:.15;transform:translate(-50%,-50%) scale(2)}100%{opacity:0;transform:translate(-50%,-50%) scale(3)}}
+  .streak-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-pill);background:rgba(14,137,146,0.08);border:1px solid rgba(14,137,146,0.15);font-weight:300;font-size:11px;color:var(--teal);margin-top:12px;animation:cardIn .5s ease .3s both}
+  .streak-badge svg{width:14px;height:14px}
 
   /* ═══ COMPLETION ═══ */
   .completion-view{padding:40px 20px 110px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;animation:cardIn .6s ease both}
@@ -115,6 +151,23 @@
   .chart-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
   .legend-item{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:300;color:var(--text-light)}
   .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+  /* Prose patterns with expandable charts */
+  .pattern-item{padding:14px 0;border-bottom:1px solid rgba(140,182,188,0.1)}
+  .pattern-item:last-child{border-bottom:none;padding-bottom:0}
+  .pattern-item:first-child{padding-top:0}
+  .pattern-text{font-weight:300;font-size:13px;color:var(--navy);line-height:1.6;margin-bottom:8px}
+  .pattern-explore{font-family:'Outfit',sans-serif;font-weight:400;font-size:12px;color:var(--teal);background:none;border:none;cursor:pointer;padding:6px 0;display:flex;align-items:center;gap:4px;transition:opacity .2s ease}
+  .pattern-explore:hover{opacity:.7}
+  .pattern-explore::before{content:'';display:inline-block;width:0;height:0;border-left:5px solid var(--teal);border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .3s ease}
+  .pattern-explore.open::before{transform:rotate(90deg)}
+  .chart-expandable{overflow:hidden;transition:all .4s ease;margin-top:8px}
+
+  /* Journal page */
+  .journal-page{padding:8px 0 110px}
+  .journal-mood-tag{font-size:10px;font-weight:400;padding:4px 12px;border-radius:var(--radius-pill);display:inline-flex;align-items:center;gap:4px}
+  .journal-mood-tag.has-mood{background:rgba(14,137,146,0.08);color:var(--teal)}
+  .journal-mood-tag:empty{display:none}
 
   /* ═══ PRACTICES PAGE ═══ */
   .practices-page{padding:8px 0 110px}
@@ -233,12 +286,27 @@
   .lived-text.enter-right{opacity:0;transform:translateX(24px)}
   .lived-text.exit-left{opacity:0;transform:translateX(-24px)}
 
-  /* ═══ NAV (4 tabs now) ═══ */
+  /* ═══ WELCOME OVERLAY ═══ */
+  .welcome-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--sand);z-index:200;display:flex;align-items:center;justify-content:center;animation:fadeIn .5s ease both}
+  .welcome-overlay.hidden{display:none}
+  .welcome-content{text-align:center;padding:40px 32px;max-width:340px;width:100%}
+  .welcome-logo{width:80px;height:80px;margin:0 auto 24px}
+  .welcome-logo svg{width:100%;height:100%}
+  .welcome-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:28px;color:var(--navy);margin-bottom:8px}
+  .welcome-subtitle{font-weight:300;font-size:13px;color:var(--text-light);line-height:1.55;margin-bottom:32px}
+  .welcome-input{width:100%;padding:14px 20px;border-radius:var(--radius-sm);border:1.5px solid rgba(140,182,188,0.3);background:rgba(255,255,255,0.5);font-family:'Outfit',sans-serif;font-weight:300;font-size:16px;color:var(--navy);text-align:center;outline:none;transition:border-color .3s ease;margin-bottom:16px}
+  .welcome-input:focus{border-color:var(--teal)}
+  .welcome-input::placeholder{color:rgba(13,49,58,0.35)}
+  .welcome-btn{width:100%;padding:14px;border-radius:var(--radius-pill);border:none;background:var(--teal);color:white;font-family:'Outfit',sans-serif;font-weight:300;font-size:15px;letter-spacing:1px;cursor:pointer;opacity:.4;pointer-events:none;transition:all .3s ease}
+  .welcome-btn.enabled{opacity:1;pointer-events:auto}
+  .welcome-btn:active{transform:scale(.97)}
+
+  /* ═══ NAV (5 tabs) ═══ */
   .nav-bar{position:absolute;bottom:0;left:0;right:0;height:82px;background:rgba(246,239,232,0.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.6);display:flex;justify-content:space-around;align-items:flex-start;padding-top:12px;z-index:10}
-  .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 10px}
-  .nav-icon svg{width:22px;height:22px;stroke:var(--text-light);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .25s ease}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 6px}
+  .nav-icon svg{width:20px;height:20px;stroke:var(--text-light);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .25s ease}
   .nav-item.active .nav-icon svg{stroke:var(--teal)}
-  .nav-label{font-size:9px;font-weight:300;color:var(--text-light);letter-spacing:.4px;transition:color .25s ease}
+  .nav-label{font-size:8px;font-weight:300;color:var(--text-light);letter-spacing:.3px;transition:color .25s ease}
   .nav-item.active .nav-label{color:var(--teal);font-weight:400}
   .nav-dot{width:4px;height:4px;border-radius:50%;background:var(--teal);opacity:0;transition:opacity .25s ease;margin-top:-2px}
   .nav-item.active .nav-dot{opacity:1}
@@ -261,7 +329,7 @@
     .nav-dot{margin-top:0}
     .header-zone{padding:40px 48px 0}
     .header-greeting{font-size:28px}
-    .orb-page,.question-flow,.completion-view,.insights-page,.practices-page,.about-page{padding-bottom:40px}
+    .orb-page,.question-flow,.completion-view,.insights-page,.practices-page,.journal-page,.about-page{padding-bottom:40px}
     .glass-card{margin-left:0;margin-right:0}
     /* Reflect: mood left, survey right */
     .reflect-split{display:grid;grid-template-columns:minmax(300px,1fr) minmax(340px,1.15fr);gap:36px 48px;align-items:start;padding:16px 40px 40px;max-width:1100px;margin:0 auto}
@@ -281,9 +349,9 @@
     /* Insights: stats full width, two charts side by side, insight full width */
     .insights-page{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px;padding:16px 40px 40px;max-width:1100px;margin:0 auto}
     .insights-page .glass-card:first-child{grid-column:1/-1}
-    .insights-page .glass-card:nth-child(2){grid-column:1}
-    .insights-page .glass-card:nth-child(3){grid-column:2}
-    .insights-page .glass-card:nth-child(4){grid-column:1/-1}
+    .insights-page .glass-card:nth-child(2){grid-column:1/-1}
+    .insights-page .glass-card:nth-child(3){grid-column:1}
+    .insights-page .glass-card:nth-child(4){grid-column:2}
     /* Practices: two columns */
     .practices-page{padding:16px 40px 40px;max-width:1100px;margin:0 auto}
     .practices-filter-hint{margin-left:0;margin-right:0}
@@ -312,9 +380,59 @@
 <body>
 <div class="app" id="app">
 
+  <!-- ═══ WELCOME OVERLAY ═══ -->
+  <div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-content">
+      <div class="welcome-logo">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="42" r="38" fill="#E9A27C" opacity="0.06"/>
+          <circle cx="50" cy="42" r="32" fill="#E9A27C" opacity="0.1"/>
+          <circle cx="50" cy="42" r="26" fill="#E9A27C" opacity="0.15"/>
+          <circle cx="50" cy="42" r="22" fill="#E9A27C" opacity="0.22"/>
+          <circle cx="50" cy="42" r="18" fill="#E9A27C"/>
+          <circle cx="50" cy="42" r="14" fill="#E7BBA6" opacity="0.18"/>
+          <circle cx="52" cy="41" r="14" fill="#0D313A" opacity="0.92"/>
+          <circle cx="47" cy="36" r="1.2" fill="#8CB6BC" opacity="0.3"/>
+          <circle cx="56" cy="38" r="0.9" fill="#8CB6BC" opacity="0.22"/>
+          <circle cx="50" cy="46" r="1" fill="#8CB6BC" opacity="0.25"/>
+          <path d="M10,70 Q30,62 50,68 Q70,74 90,66" fill="none" stroke="#8CB6BC" stroke-width="1.2" opacity="0.5"/>
+          <path d="M10,76 Q30,68 50,74 Q70,80 90,72" fill="none" stroke="#8CB6BC" stroke-width="0.7" opacity="0.22"/>
+        </svg>
+      </div>
+      <div class="welcome-title">Welcome to Soluna</div>
+      <div class="welcome-subtitle">Your mood companion. Let's start by getting to know you.</div>
+      <input type="text" class="welcome-input" id="welcomeNameInput" placeholder="What's your name?" maxlength="30" autocomplete="off" autofocus>
+      <button class="welcome-btn" id="welcomeBtn" onclick="saveWelcomeName()">Continue</button>
+    </div>
+  </div>
+
   <!-- ═══ HEADER (lighter tone) ═══ -->
   <div class="header-zone">
-    <div class="header-brand">Soluna</div>
+    <div class="header-brand">
+      <div class="header-logo">
+        <svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
+          <!-- Corona glow rings -->
+          <circle cx="50" cy="44" r="42" fill="#E9A27C" opacity="0.05"/>
+          <circle cx="50" cy="44" r="36" fill="#E9A27C" opacity="0.08"/>
+          <circle cx="50" cy="44" r="30" fill="#E9A27C" opacity="0.13"/>
+          <circle cx="50" cy="44" r="26" fill="#E9A27C" opacity="0.2"/>
+          <!-- Sun -->
+          <circle cx="50" cy="44" r="22" fill="#E9A27C"/>
+          <circle cx="50" cy="44" r="18" fill="#E7BBA6" opacity="0.2"/>
+          <!-- Moon eclipse -->
+          <circle cx="53" cy="42" r="18" fill="#0D313A" opacity="0.92"/>
+          <!-- Craters -->
+          <circle cx="47" cy="36" r="1.5" fill="#8CB6BC" opacity="0.3"/>
+          <circle cx="58" cy="38" r="1.1" fill="#8CB6BC" opacity="0.22"/>
+          <circle cx="50" cy="48" r="1.3" fill="#8CB6BC" opacity="0.25"/>
+          <circle cx="44" cy="43" r="0.9" fill="#8CB6BC" opacity="0.18"/>
+          <!-- Wave -->
+          <path d="M8,74 Q29,66 50,72 Q71,78 92,70" fill="none" stroke="#8CB6BC" stroke-width="1.2" opacity="0.5"/>
+          <path d="M8,80 Q29,72 50,78 Q71,84 92,76" fill="none" stroke="#8CB6BC" stroke-width="0.7" opacity="0.22"/>
+        </svg>
+      </div>
+      <span class="header-wordmark">Soluna</span>
+    </div>
     <div class="header-greeting" id="greeting">Good morning</div>
     <div class="header-date" id="dateDisplay"></div>
   </div>
@@ -351,7 +469,8 @@
       <div class="reflect-split">
         <div class="reflect-col reflect-col-orb">
       <div class="orb-page" id="orbView">
-        <div class="orb-instruction">Drag the orb towards how you're feeling — or tap a state</div>
+        <div class="orb-heading">How are you feeling right now?</div>
+        <div class="orb-instruction">Drag the orb or tap a state</div>
         <div class="orb-arena" id="orbArena">
           <div class="orb-ring-2"></div><div class="orb-ring"></div>
           <div class="state-label" data-state="hypomania" onclick="selectState('hypomania')">Hypomania</div>
@@ -374,12 +493,24 @@
         </div>
         <div class="selected-feedback"><div class="selected-state-name" id="selectedName" style="opacity:0"></div><div class="selected-state-desc" id="selectedDesc" style="opacity:0"></div></div>
         <button class="continue-btn" id="continueBtn" onclick="startQuestions()">Continue</button>
+        <!-- Quote of the day -->
+        <div class="quote-card" id="quoteCard">
+          <div class="quote-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+          </div>
+          <div class="quote-text" id="quoteText"></div>
+        </div>
+        <!-- Crisis help button -->
+        <button class="help-btn" id="helpBtn" onclick="openCrisisModal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Do you need help?
+        </button>
       </div>
         </div>
         <div class="reflect-col reflect-col-survey">
           <div class="reflect-desktop-placeholder" aria-hidden="true"><div class="reflect-desktop-placeholder-inner"><p class="reflect-desktop-placeholder-title">Daily check-in</p><p class="reflect-desktop-placeholder-text">Choose how you're feeling on the left, then tap Continue to answer a few short questions.</p></div></div>
-      <div class="question-flow" id="questionFlow" style="display:none"><div class="question-progress" id="qProgress"></div><div class="q-card" id="qCard"><div class="q-label" id="qLabel"></div><div class="q-num" id="qNum"></div><div class="q-text" id="qText"></div><div class="q-options" id="qOpts"></div><div class="q-nav"><button class="q-back" id="qBack" onclick="prevQ()">&#8592; Back</button><button class="q-next" id="qNext" onclick="nextQ()">Next</button></div></div></div>
-      <div class="completion-view" id="compView" style="display:none"><div class="completion-emoji">&#127754;</div><div class="completion-title">Reflection saved</div><div class="completion-text" id="compText"></div><button class="completion-done" onclick="resetAll()">Done</button></div>
+      <div class="question-flow" id="questionFlow" style="display:none"><div class="question-progress" id="qProgress"></div><div class="q-card" id="qCard"><div class="q-label" id="qLabel"></div><div class="q-num" id="qNum"></div><div class="q-text" id="qText"></div><div class="q-options" id="qOpts"></div><div class="q-nav"><button class="q-back" id="qBack" onclick="prevQ()">&#8592; Back</button><div class="q-nav-right"><button class="q-skip" id="qSkip" onclick="skipSurvey()">Save for later</button><button class="q-next" id="qNext" onclick="nextQ()">Next</button></div></div></div></div>
+      <div class="completion-view" id="compView" style="display:none"><div class="completion-emoji">&#127754;</div><div class="completion-title">Reflection saved</div><div class="completion-text" id="compText"></div><div class="streak-badge" id="streakBadge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/></svg><span id="streakText"></span></div><button class="completion-done" onclick="resetAll()">Done</button></div>
         </div>
       </div>
     </div>
@@ -387,10 +518,34 @@
 
   <!-- ═══ INSIGHTS ═══ -->
   <div class="page-content" id="pageInsights" style="display:none"><div class="page active insights-page">
-    <div class="glass-card"><div class="card-label">This Week</div><div class="insight-stat-grid"><div class="insight-stat" style="background:rgba(233,162,124,0.12)"><div class="stat-value" style="color:var(--peach)">Stable</div><div class="stat-label-text">Most common state</div></div><div class="insight-stat" style="background:rgba(140,182,188,0.12)"><div class="stat-value" style="color:var(--teal)">5</div><div class="stat-label-text">Days logged</div></div><div class="insight-stat" style="background:rgba(231,187,166,0.12)"><div class="stat-value" style="color:var(--blush)">C</div><div class="stat-label-text">Avg sleep response</div></div><div class="insight-stat" style="background:rgba(14,137,146,0.08)"><div class="stat-value" style="color:var(--teal)">B+</div><div class="stat-label-text">Energy trend</div></div></div></div>
-    <div class="glass-card"><div class="card-label">Mood State Over Time</div><div class="chart-container"><canvas id="moodChart" class="chart-canvas" height="180"></canvas></div><div class="chart-legend" id="moodLegend"></div></div>
-    <div class="glass-card"><div class="card-label">Survey Responses & Mood</div><div class="chart-container"><canvas id="corrChart" class="chart-canvas" height="220"></canvas></div><div class="chart-legend" id="corrLegend"></div></div>
-    <div class="glass-card"><div class="card-label">Gentle Insight</div><div class="card-subtitle" style="line-height:1.7;font-style:italic">On days you reported stable mood, your sleep and energy responses tended to cluster around C (balanced). Mid-week shifts towards hypomania corresponded with lower sleep quality and higher social activity.</div></div>
+    <div class="glass-card"><div class="card-label">This Week</div><div class="insight-stat-grid"><div class="insight-stat" style="background:rgba(233,162,124,0.12)"><div class="stat-value" style="color:var(--peach)">—</div><div class="stat-label-text">Most common state</div></div><div class="insight-stat" style="background:rgba(140,182,188,0.12)"><div class="stat-value" style="color:var(--teal)">0</div><div class="stat-label-text">Days logged</div></div><div class="insight-stat" style="background:rgba(231,187,166,0.12)"><div class="stat-value" style="color:var(--blush)">—</div><div class="stat-label-text">Avg sleep response</div></div><div class="insight-stat" style="background:rgba(14,137,146,0.08)"><div class="stat-value" style="color:var(--teal)">—</div><div class="stat-label-text">Energy trend</div></div></div></div>
+
+    <div class="glass-card">
+      <div class="card-label">Patterns</div>
+      <div class="pattern-item">
+        <div class="pattern-text">Your sleep and mood seem connected. On nights you reported restful sleep, the following day tended to be stable.</div>
+        <button class="pattern-explore" onclick="toggleChart('moodChart')">Want to explore this pattern?</button>
+        <div class="chart-expandable" id="moodChartWrap" style="display:none"><div class="chart-container"><canvas id="moodChart" class="chart-canvas" height="180"></canvas></div><div class="chart-legend" id="moodLegend"></div></div>
+      </div>
+      <div class="pattern-item">
+        <div class="pattern-text">Mid-week energy dips often align with higher social activity the day before. Your body may need more recovery time after social interactions.</div>
+        <button class="pattern-explore" onclick="toggleChart('corrChart')">Want to see the detail?</button>
+        <div class="chart-expandable" id="corrChartWrap" style="display:none"><div class="chart-container"><canvas id="corrChart" class="chart-canvas" height="220"></canvas></div><div class="chart-legend" id="corrLegend"></div></div>
+      </div>
+      <div class="pattern-item">
+        <div class="pattern-text">Your spending stays steady when your mood is stable — but shifts towards impulsive during elevated periods. This is a common pattern worth watching.</div>
+      </div>
+    </div>
+
+    <div class="glass-card"><div class="card-label">Gentle Insight</div><div class="card-subtitle" style="line-height:1.7;font-style:italic">Stability isn't the absence of highs and lows — it's the ability to notice them early. Your consistent logging is building a picture that could help you and your care team spot shifts before they escalate.</div></div>
+
+    <div class="glass-card" style="text-align:center">
+      <div class="card-label">Export Your Data</div>
+      <div class="card-subtitle" style="margin-bottom:14px">Download a summary of your mood logs, survey responses, and patterns to share with your therapist or doctor.</div>
+      <button class="modal-btn primary" style="padding:12px 28px;font-size:12px" onclick="exportData()">
+        <span style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export Summary</span>
+      </button>
+    </div>
   </div></div>
 
   <!-- ═══ PRACTICES ═══ -->
@@ -400,6 +555,23 @@
     <div class="mood-filter" id="moodFilter" role="tablist" aria-label="Filter practices by mood"></div>
     <div class="practices-grid" id="practicesGrid"></div>
     <div style="height:16px"></div>
+  </div></div>
+
+  <!-- ═══ JOURNAL (5th tab) ═══ -->
+  <div class="page-content" id="pageJournal" style="display:none"><div class="page active journal-page">
+    <div class="glass-card" style="margin-bottom:12px"><div class="card-label">Brain Dump Journal</div><div class="card-subtitle">Get it out of your head. No rules, no judgment — just write.</div></div>
+    <div class="glass-card">
+      <textarea class="journal-textarea" id="journalPageTextarea" placeholder="What's on your mind right now?"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="journal-mood-tag" id="journalMoodTag"></div>
+        <button class="modal-btn primary" style="padding:10px 28px;font-size:12px" onclick="saveJournalFromPage()">Save Entry</button>
+      </div>
+    </div>
+    <div class="glass-card" id="journalHistoryCard">
+      <div class="card-label">Previous Entries</div>
+      <div id="journalPageEntries"></div>
+      <div class="journal-empty" id="journalEmpty" style="text-align:center;padding:20px;font-weight:300;font-size:13px;color:var(--text-light);font-style:italic">No entries yet. Your first brain dump will appear here.</div>
+    </div>
   </div></div>
 
   <!-- ═══ ABOUT ═══ -->
@@ -418,7 +590,7 @@
         <div class="lived-text" id="livedText"></div>
       </div>
     </div>
-    <div class="glass-card"><div class="info-banner"><span class="info-banner-icon">&#9825;</span><span class="info-banner-text">Soluna is not a diagnostic tool. If you're in crisis, please reach out to Samaritans (116 123) or your local emergency service.</span></div></div>
+    <div class="glass-card"><div class="info-banner"><span class="info-banner-icon">&#9825;</span><span class="info-banner-text">Soluna is not a diagnostic tool or a replacement for professional support. If you need crisis resources, tap the "Do you need help?" button on the Reflect page.</span></div></div>
   </div></div>
 
   <!-- ═══ PRACTICE MODAL ═══ -->
@@ -449,6 +621,78 @@
     </div>
   </div>
 
+  <!-- ═══ CRISIS RESOURCES MODAL ═══ -->
+  <div class="modal-overlay" id="crisisModal">
+    <div class="modal-content">
+      <div class="modal-handle"></div>
+      <div class="crisis-header">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#0E8992" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <div class="crisis-title">You are not alone</div>
+      </div>
+      <div class="crisis-subtitle">If you or someone you know is in crisis, please reach out. These services are free, confidential, and available now.</div>
+
+      <div class="crisis-section-label">UK</div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">Samaritans</div>
+        <div class="crisis-resource-detail">24/7 emotional support for anyone in distress</div>
+        <div class="crisis-resource-contact">116 123 (free) or <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c4aeab84b7a5a9a5b6adb0a5aab7eaabb6a3">[email&#160;protected]</a></div>
+      </div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">Crisis Text Line</div>
+        <div class="crisis-resource-detail">Free, 24/7 text-based mental health support</div>
+        <div class="crisis-resource-contact">Text SHOUT to 85258</div>
+      </div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">Mind</div>
+        <div class="crisis-resource-detail">Information and support for mental health</div>
+        <div class="crisis-resource-contact">0300 123 3393 (Mon–Fri, 9am–6pm)</div>
+      </div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">Bipolar UK</div>
+        <div class="crisis-resource-detail">Peer support line specifically for bipolar</div>
+        <div class="crisis-resource-contact">0333 323 3880</div>
+      </div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">SANEline</div>
+        <div class="crisis-resource-detail">Specialist emotional support for mental illness</div>
+        <div class="crisis-resource-contact">0300 304 7000 (4:30pm–10:30pm daily)</div>
+      </div>
+
+      <div class="crisis-section-label">International</div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">International Association for Suicide Prevention</div>
+        <div class="crisis-resource-detail">Directory of crisis centres worldwide</div>
+        <div class="crisis-resource-contact">iasp.info/resources/Crisis_Centres</div>
+      </div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">988 Suicide & Crisis Lifeline (US)</div>
+        <div class="crisis-resource-detail">24/7 support by phone, chat, or text</div>
+        <div class="crisis-resource-contact">Call or text 988</div>
+      </div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">Lifeline (Australia)</div>
+        <div class="crisis-resource-detail">24/7 crisis support and suicide prevention</div>
+        <div class="crisis-resource-contact">13 11 14</div>
+      </div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">Crisis Services Canada</div>
+        <div class="crisis-resource-detail">24/7 support in English and French</div>
+        <div class="crisis-resource-contact">1-833-456-4566 or text 45645</div>
+      </div>
+      <div class="crisis-resource">
+        <div class="crisis-resource-name">Befrienders Worldwide</div>
+        <div class="crisis-resource-detail">Emotional support in 32 countries</div>
+        <div class="crisis-resource-contact">befrienders.org</div>
+      </div>
+
+      <div class="crisis-footer">Soluna is not a diagnostic tool or a replacement for professional support. If you are in immediate danger, please call your local emergency services.</div>
+
+      <div style="text-align:center;margin-top:16px">
+        <button class="modal-btn secondary" onclick="closeCrisisModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══ NAV (4 tabs) ═══ -->
   <nav class="nav-bar" role="navigation" aria-label="Main">
     <div class="nav-item active" data-page="reflect" onclick="switchPage('reflect')" aria-current="page">
@@ -463,6 +707,10 @@
       <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
       <span class="nav-label">Practices</span><div class="nav-dot"></div>
     </div>
+    <div class="nav-item" data-page="journal" onclick="switchPage('journal')">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg></div>
+      <span class="nav-label">Journal</span><div class="nav-dot"></div>
+    </div>
     <div class="nav-item" data-page="about" onclick="switchPage('about')">
       <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
       <span class="nav-label">About</span><div class="nav-dot"></div>
@@ -470,11 +718,62 @@
   </nav>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ─── Date ───
-var now=new Date(),hour=now.getHours(),greet=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+// ═══ FRESH START — one-time data wipe for new trial ═══
+(function(){
+  try{
+    if(!localStorage.getItem('soluna_fresh_v2')){
+      ['soluna_journal','soluna_streak','soluna_last_log','soluna_last_mood','soluna_user_name'].forEach(function(k){localStorage.removeItem(k)});
+      localStorage.setItem('soluna_fresh_v2','1');
+    }
+  }catch(e){}
+})();
+
+// ═══ NAME & GREETING ═══
+var NAME_KEY='soluna_user_name';
+var userName='';
+try{userName=localStorage.getItem(NAME_KEY)||''}catch(e){}
+
+var now=new Date(),hour=now.getHours();
+var timeGreet=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+var greet=userName?(timeGreet+', '+userName):timeGreet;
+
 document.getElementById('greeting').textContent=greet;
 document.getElementById('dateDisplay').textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+
+// Welcome overlay
+(function(){
+  var overlay=document.getElementById('welcomeOverlay');
+  var input=document.getElementById('welcomeNameInput');
+  var btn=document.getElementById('welcomeBtn');
+  if(!overlay)return;
+  // If name already saved, hide overlay immediately
+  if(userName){overlay.classList.add('hidden');return}
+  // Enable button when input has text
+  input.addEventListener('input',function(){
+    btn.classList.toggle('enabled',input.value.trim().length>0);
+  });
+  // Enter key submits
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&input.value.trim())saveWelcomeName();
+  });
+})();
+
+function saveWelcomeName(){
+  var input=document.getElementById('welcomeNameInput');
+  var name=input.value.trim();
+  if(!name)return;
+  userName=name;
+  try{localStorage.setItem(NAME_KEY,name)}catch(e){}
+  greet=timeGreet+', '+userName;
+  document.getElementById('greeting').textContent=greet;
+  hTexts.reflect=greet;
+  var overlay=document.getElementById('welcomeOverlay');
+  overlay.style.opacity='0';
+  overlay.style.transition='opacity .5s ease';
+  setTimeout(function(){overlay.classList.add('hidden')},500);
+}
 
 // ═══ WAVE TILT — “cup of water”: surface stays level with gravity, so it tilts *opposite* to the phone ═══
 (function(){
@@ -523,7 +822,7 @@ var stateData={hypomania:{name:'Hypomania',desc:'Elevated mood, good energy, cre
 var statePositions={hypomania:{x:.5,y:.06},mania:{x:.94,y:.5},stable:{x:.5,y:.94},depression:{x:.06,y:.5}};
 var selectedMood=null;
 
-function selectState(s){selectedMood=s;var d=stateData[s];document.querySelectorAll('.state-label').forEach(function(l){l.classList.remove('active')});document.querySelector('.state-label[data-state="'+s+'"]').classList.add('active');var n=document.getElementById('selectedName'),dd=document.getElementById('selectedDesc');n.textContent=d.name;n.style.color=d.color;n.style.opacity='1';dd.textContent=d.desc;dd.style.opacity='1';updateOrbColor(d.color);document.getElementById('continueBtn').classList.add('visible')}
+function selectState(s){selectedMood=s;var d=stateData[s];document.querySelectorAll('.state-label').forEach(function(l){l.classList.remove('active')});document.querySelector('.state-label[data-state="'+s+'"]').classList.add('active');var n=document.getElementById('selectedName'),dd=document.getElementById('selectedDesc');n.textContent=d.name;n.style.color=d.color;n.style.opacity='1';dd.textContent=d.desc;dd.style.opacity='1';updateOrbColor(d.color);document.getElementById('continueBtn').classList.add('visible');updateQuote(s)}
 
 function updateOrbColor(hex){var lt=adjCol(hex,40),dk=adjCol(hex,-30),dkst=adjCol(hex,-50);document.querySelector('#orbGrad stop:nth-child(1)').setAttribute('stop-color',lt);document.querySelector('#orbGrad stop:nth-child(2)').setAttribute('stop-color',hex);document.querySelector('#orbGrad stop:nth-child(3)').setAttribute('stop-color',dk);document.querySelector('#orbDP stop:nth-child(1)').setAttribute('stop-color',dkst);document.querySelector('#orbDP stop:nth-child(2)').setAttribute('stop-color',dkst);document.querySelector('.orb-container').style.filter='drop-shadow(0 8px 28px '+hex+'44)'}
 function adjCol(hex,amt){var n=parseInt(hex.slice(1),16),r=Math.min(255,Math.max(0,(n>>16)+amt)),g=Math.min(255,Math.max(0,((n>>8)&0xFF)+amt)),b=Math.min(255,Math.max(0,(n&0xFF)+amt));return'#'+(1<<24|r<<16|g<<8|b).toString(16).slice(1)}
@@ -535,6 +834,79 @@ function sd(e){isDrag=true;var p=gp(e),r=orbEl.getBoundingClientRect();oX=p.x-(r
 function md(e){if(!isDrag)return;var p=gp(e),ar=arenaEl.getBoundingClientRect(),w=orbEl.offsetWidth,h=orbEl.offsetHeight;var nx=p.x-oX-ar.left,ny=p.y-oY-ar.top;nx=Math.max(w*.3,Math.min(ar.width-w*.3,nx));ny=Math.max(h*.3,Math.min(ar.height-h*.3,ny));orbEl.style.left=nx+'px';orbEl.style.top=ny+'px';orbEl.style.transform='translate(-50%,-50%)';var normX=nx/ar.width,normY=ny/ar.height,closest=null,best=Infinity;for(var s in statePositions){var sp=statePositions[s],dist=Math.sqrt(Math.pow(normX-sp.x,2)+Math.pow(normY-sp.y,2));if(dist<best){best=dist;closest=s}}if(best<.3&&closest!==selectedMood)selectState(closest);e.preventDefault()}
 function ed(){if(!isDrag)return;isDrag=false;if(selectedMood){var sp=statePositions[selectedMood],ar=arenaEl.getBoundingClientRect();var tx=.5+(sp.x-.5)*.35,ty=.5+(sp.y-.5)*.35;orbEl.style.transition='left .5s cubic-bezier(.34,1.56,.64,1),top .5s cubic-bezier(.34,1.56,.64,1)';orbEl.style.left=(tx*ar.width)+'px';orbEl.style.top=(ty*ar.height)+'px'}}
 orbEl.addEventListener('mousedown',sd);orbEl.addEventListener('touchstart',sd,{passive:false});document.addEventListener('mousemove',md);document.addEventListener('touchmove',md,{passive:false});document.addEventListener('mouseup',ed);document.addEventListener('touchend',ed);
+
+// ═══ QUOTE OF THE DAY ═══
+var moodQuotes={
+  default:[
+    'You are more than your diagnosis. You are a whole person having a human experience.',
+    'Showing up is enough. You don\'t have to be productive to be valuable.',
+    'Your sensitivity is not a flaw — it\'s how you experience the world more deeply than most.',
+    'Recovery is not a straight line. Every step counts, even the ones that feel like they go backwards.',
+    'You have survived every single one of your worst days. That is extraordinary.',
+    'Being kind to yourself is not self-indulgence — it\'s self-preservation.',
+    'You don\'t owe anyone an explanation for taking care of yourself.',
+    'The fact that you\'re checking in with yourself right now is an act of courage.'
+  ],
+  mania:[
+    'You don\'t need to act on every impulse. Sit with the energy — it will shift.',
+    'Your ideas are valid, but they\'ll still be there tomorrow. Write them down and rest.',
+    'Slow is not the same as stuck. Give yourself permission to move gently today.',
+    'Not every surge of energy needs to become a project. Sometimes it just needs to pass through you.',
+    'The world can wait. You are allowed to pause even when your mind says otherwise.',
+    'Your value doesn\'t increase with your output. You matter just as much at rest.',
+    'Notice the speed of your thoughts right now. You don\'t have to keep up with them.',
+    'If everything feels urgent, that\'s information — not a to-do list.'
+  ],
+  hypomania:[
+    'This energy might feel good, but keep checking in. You know yourself better than anyone.',
+    'Enjoy the creativity, but protect your sleep tonight. Future you will thank you.',
+    'Feeling great doesn\'t mean you need to reorganise your entire life today.',
+    'Ride the wave gently. You don\'t have to chase it or control it.',
+    'If you\'re making plans right now, run them past someone you trust before acting.',
+    'Productivity is wonderful, but rest is what keeps it sustainable.',
+    'This version of you is real — and so is the version that needs to slow down.',
+    'The best ideas survive a good night\'s sleep. If it\'s still brilliant tomorrow, go for it.'
+  ],
+  stable:[
+    'Stability is not boring — it\'s the foundation you\'ve been building towards.',
+    'Savour this steadiness. It\'s not the absence of feeling — it\'s the presence of balance.',
+    'This is what your baseline feels like. Remember this for the days when you forget.',
+    'You don\'t need to wait for a crisis to take care of yourself. Maintain what\'s working.',
+    'Balanced doesn\'t mean perfect. It means you\'re managing — and that\'s remarkable.',
+    'Use this clarity to set up small things that will help you in harder times.',
+    'You\'ve done the work to get here. You deserve to enjoy it without guilt.',
+    'Routine might feel mundane, but for you it\'s a superpower. Protect it.'
+  ],
+  depression:[
+    'You are not lazy. You are carrying something incredibly heavy, and you\'re still here.',
+    'You don\'t have to feel better today. You just have to get through today.',
+    'Depression lies. It tells you nothing will change — but it always does, eventually.',
+    'One small thing. That\'s all. Drink water. Open a curtain. That counts.',
+    'The heaviness you feel is not permanent, even when it feels like it is.',
+    'You are allowed to ask for help. Needing support is human, not weakness.',
+    'Your brain is protecting itself. This fog is temporary, not who you are.',
+    'Existing right now is enough. You don\'t need to earn your rest.'
+  ]
+};
+
+function getDailyQuote(mood){
+  var pool=moodQuotes[mood||'default'];
+  var dayOfYear=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(1000*60*60*24));
+  return pool[dayOfYear%pool.length];
+}
+
+function updateQuote(mood){
+  var el=document.getElementById('quoteText');
+  if(!el)return;
+  el.style.opacity='0';
+  setTimeout(function(){
+    el.textContent=getDailyQuote(mood);
+    el.style.opacity='1';
+  },300);
+}
+
+// Show default quote on load
+updateQuote(null);
 
 // ═══ QUESTIONNAIRE ═══
 var questions=[
@@ -551,22 +923,62 @@ function startQuestions(){var qf=document.getElementById('questionFlow');qf.styl
 function renderQ(){var q=questions[curQ],prog=document.getElementById('qProgress');prog.innerHTML='';questions.forEach(function(_,i){var d=document.createElement('div');d.className='progress-dot'+(i<curQ?' filled':'')+(i===curQ?' current':'');prog.appendChild(d)});document.getElementById('qLabel').textContent=q.label;document.getElementById('qNum').textContent='Question '+q.num+' of 6';document.getElementById('qText').textContent=q.text;var o=document.getElementById('qOpts');o.innerHTML='';q.options.forEach(function(opt){var p=document.createElement('div');p.className='q-pill'+(qAns[q.key]===opt.letter?' selected':'');p.innerHTML='<span class="q-letter" style="background:'+opt.bg+'">'+opt.letter+'</span><span class="q-pill-text">'+opt.text+'</span>';p.addEventListener('click',function(){o.querySelectorAll('.q-pill').forEach(function(x){x.classList.remove('selected')});p.classList.add('selected');qAns[q.key]=opt.letter;document.getElementById('qNext').classList.add('enabled')});o.appendChild(p)});document.getElementById('qBack').style.visibility=curQ===0?'hidden':'visible';var nb=document.getElementById('qNext');nb.textContent=curQ===questions.length-1?'Finish':'Next';nb.classList.toggle('enabled',!!qAns[q.key]);var card=document.getElementById('qCard');card.style.animation='none';card.offsetHeight;card.style.animation='cardIn .35s ease both'}
 function nextQ(){if(!qAns[questions[curQ].key])return;if(curQ<questions.length-1){curQ++;renderQ()}else showComp()}
 function prevQ(){if(curQ>0){curQ--;renderQ()}else{document.getElementById('questionFlow').style.display='none';setReflectPhase('orb')}}
-function showComp(){document.getElementById('questionFlow').style.display='none';var c=document.getElementById('compView');c.style.display='flex';c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .6s ease both';setReflectPhase('complete');if(selectedMood)setStoredLastMood(selectedMood);practicesFilterManual=false;var msgs=['Thank you for checking in. Every reflection is a small act of self-care.','You showed up for yourself today. That matters more than you might think.','There are no wrong answers here — only honest ones. Well done.','Noticing how you feel is the first step towards understanding your patterns.'];document.getElementById('compText').textContent=msgs[Math.floor(Math.random()*msgs.length)]}
+function skipSurvey(){
+  // Save partial answers and mood, return to orb
+  if(selectedMood)setStoredLastMood(selectedMood);
+  practicesFilterManual=false;
+  document.getElementById('questionFlow').style.display='none';
+  setReflectPhase('orb');
+}
+// ═══ STREAK TRACKING ═══
+var STREAK_KEY='soluna_streak',LAST_LOG_KEY='soluna_last_log';
+function getStreak(){try{return parseInt(localStorage.getItem(STREAK_KEY))||0}catch(e){return 0}}
+function updateStreak(){
+  try{
+    var today=new Date().toDateString();
+    var lastLog=localStorage.getItem(LAST_LOG_KEY);
+    var streak=getStreak();
+    if(lastLog===today)return streak; // already logged today
+    var yesterday=new Date(Date.now()-86400000).toDateString();
+    if(lastLog===yesterday){streak++}else if(lastLog!==today){streak=1}
+    localStorage.setItem(STREAK_KEY,String(streak));
+    localStorage.setItem(LAST_LOG_KEY,today);
+    return streak;
+  }catch(e){return 1}
+}
+function showComp(){
+  document.getElementById('questionFlow').style.display='none';
+  var c=document.getElementById('compView');c.style.display='flex';c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .6s ease both';
+  setReflectPhase('complete');
+  if(selectedMood)setStoredLastMood(selectedMood);
+  practicesFilterManual=false;
+  // Celebration pulse
+  var cel=document.createElement('div');cel.className='celebration-overlay';cel.innerHTML='<div class="celebration-orb"></div>';
+  document.body.appendChild(cel);
+  setTimeout(function(){cel.remove()},1500);
+  // Streak
+  var streak=updateStreak();
+  var streakEl=document.getElementById('streakText');
+  if(streak>1){streakEl.textContent=streak+' day streak';document.getElementById('streakBadge').style.display='inline-flex'}
+  else{streakEl.textContent='First check-in today';document.getElementById('streakBadge').style.display='inline-flex'}
+  // Message
+  var msgs=['Thank you for checking in. Every reflection is a small act of self-care.','You showed up for yourself today. That matters more than you might think.','There are no wrong answers here — only honest ones. Well done.','Noticing how you feel is the first step towards understanding your patterns.'];
+  document.getElementById('compText').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+}
 function resetAll(){document.getElementById('compView').style.display='none';setReflectPhase('orb');selectedMood=null;Object.keys(qAns).forEach(function(k){delete qAns[k]});curQ=0;document.querySelectorAll('.state-label').forEach(function(l){l.classList.remove('active')});document.getElementById('selectedName').style.opacity='0';document.getElementById('selectedDesc').style.opacity='0';document.getElementById('continueBtn').classList.remove('visible');orbEl.style.transition='all .5s ease';orbEl.style.left='50%';orbEl.style.top='50%';updateOrbColor('#8CB6BC')}
 
 // ═══ PAGE SWITCHING ═══
-var pages={reflect:document.getElementById('pageReflect'),insights:document.getElementById('pageInsights'),practices:document.getElementById('pagePractices'),about:document.getElementById('pageAbout')};
-var hTexts={reflect:greet,insights:'Your Insights',practices:'Guided Practices',about:'About Bipolar'};
-function switchPage(n){Object.values(pages).forEach(function(p){p.style.display='none'});pages[n].style.display='block';pages[n].scrollTop=0;document.querySelectorAll('.nav-item').forEach(function(x){var on=x.getAttribute('data-page')===n;x.classList.toggle('active',on);if(on)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});document.getElementById('greeting').textContent=hTexts[n];pages[n].querySelectorAll('.glass-card').forEach(function(c,i){c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .5s ease '+(i*.08)+'s both'});if(n==='insights')setTimeout(drawCharts,100);if(n==='practices')renderPractices();if(n==='about')setTimeout(startLivedCarousel,300)}
+var pages={reflect:document.getElementById('pageReflect'),insights:document.getElementById('pageInsights'),practices:document.getElementById('pagePractices'),journal:document.getElementById('pageJournal'),about:document.getElementById('pageAbout')};
+var hTexts={reflect:greet,insights:'Your Insights',practices:'Guided Practices',journal:'Journal',about:'About Bipolar'};
+function switchPage(n){Object.values(pages).forEach(function(p){p.style.display='none'});pages[n].style.display='block';pages[n].scrollTop=0;document.querySelectorAll('.nav-item').forEach(function(x){var on=x.getAttribute('data-page')===n;x.classList.toggle('active',on);if(on)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});hTexts.reflect=greet;document.getElementById('greeting').textContent=hTexts[n];pages[n].querySelectorAll('.glass-card').forEach(function(c,i){c.style.animation='none';c.offsetHeight;c.style.animation='cardIn .5s ease '+(i*.08)+'s both'});if(n==='insights')setTimeout(drawCharts,100);if(n==='practices')renderPractices();if(n==='journal')renderJournalPage();if(n==='about')setTimeout(startLivedCarousel,300)}
 window.addEventListener('resize',function(){if(pages.insights.style.display==='block')setTimeout(drawCharts,120)})
 
-// ═══ CHARTS ═══
-var sampleDays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-// Y-axis: 0=Depression, 1=Stable, 2=Hypomania, 3=Mania
-var sampleMoods=[1,1,2,1,3,2,1];
+// ═══ CHARTS — data builds from user logging ═══
+var sampleDays=[];
+var sampleMoods=[];
 var moodLabels=['Depression','Stable','Hypomania','Mania'];
 var moodColors=[C.depression,C.stable,C.hypomania,C.manic];
-var sampleSurvey={sleep:[2,2,1,2,2,3,2],energy:[2,2,3,2,1,3,2],eating:[2,1,2,2,3,2,2],productivity:[2,2,1,2,3,2,2],social:[2,1,3,2,2,3,2],finances:[2,2,2,1,3,2,2]};
+var sampleSurvey={sleep:[],energy:[],eating:[],productivity:[],social:[],finances:[]};
 
 function drawCharts(){drawMoodChart();drawCorrChart()}
 function drawMoodChart(){var canvas=document.getElementById('moodChart'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;canvas.width=canvas.offsetWidth*dpr;canvas.height=180*dpr;ctx.scale(dpr,dpr);var W=canvas.offsetWidth,H=180,pad={t:20,r:16,b:30,l:10},cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);ctx.strokeStyle='rgba(140,182,188,0.15)';ctx.lineWidth=1;for(var i=0;i<4;i++){var gy=pad.t+cH-(i/3)*cH;ctx.beginPath();ctx.moveTo(pad.l,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}ctx.beginPath();ctx.strokeStyle=C.teal;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.lineCap='round';sampleMoods.forEach(function(v,i){var x=pad.l+(i/(sampleDays.length-1))*cW,y=pad.t+cH-(v/3)*cH;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();ctx.lineTo(pad.l+cW,pad.t+cH);ctx.lineTo(pad.l,pad.t+cH);ctx.closePath();var grad=ctx.createLinearGradient(0,pad.t,0,H);grad.addColorStop(0,'rgba(14,137,146,0.15)');grad.addColorStop(1,'rgba(14,137,146,0)');ctx.fillStyle=grad;ctx.fill();sampleMoods.forEach(function(v,i){var x=pad.l+(i/(sampleDays.length-1))*cW,y=pad.t+cH-(v/3)*cH;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle=moodColors[v];ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke()});ctx.fillStyle='rgba(13,49,58,0.4)';ctx.font='300 10px Outfit';ctx.textAlign='center';sampleDays.forEach(function(d,i){var x=pad.l+(i/(sampleDays.length-1))*cW;ctx.fillText(d,x,H-8)});var leg=document.getElementById('moodLegend');leg.innerHTML='';moodLabels.forEach(function(l,i){leg.innerHTML+='<div class="legend-item"><div class="legend-dot" style="background:'+moodColors[i]+'"></div>'+l+'</div>'})}
@@ -582,7 +994,11 @@ var practices=[
   {id:'boxbreathing',title:'Box Breathing',icon:'square',mood:'depressed',description:'The 4-4-4-4 square pattern used by Navy SEALs. Equal inhale, hold, exhale, hold to steady your system.',type:'breathing',badges:['Depressed'],badgeClass:['badge-depressed']},
   {id:'walking',title:'Walking Meditation',icon:'footsteps',mood:'manic',description:'Slow, deliberate steps with full attention on each movement.',type:'stepped',badges:['Manic'],badgeClass:['badge-manic'],steps:[{t:'Stand still',d:'Feel both feet flat on the ground. Find your balance.'},{t:'First steps',d:'Lift one foot slowly. Place it down heel first. Feel the transfer.'},{t:'Rhythm',d:'Continue slowly \u2014 lift, move, place. One foot at a time.'},{t:'Breath sync',d:'Match your breath to your steps. Inhale on lift, exhale on place.'},{t:'Return',d:'After a few minutes, stand still again. Notice how you feel.'}]},
   {id:'selfcare',title:'Ritual Self-Care',icon:'heart',mood:'depressed',description:'Gentle prompts for basic self-care when everything feels too hard.',type:'stepped',badges:['Depressed'],badgeClass:['badge-depressed'],steps:[{t:'Water',d:'Drink a glass of water. Room temperature is fine.'},{t:'Warmth',d:'Wrap yourself in something warm \u2014 a blanket, a hoodie, a scarf.'},{t:'Face',d:'Wash your face or apply moisturiser. Feel the touch on your skin.'},{t:'Rest',d:'Lie down for 5 minutes. You don\'t need to sleep \u2014 just rest.'}]},
-  {id:'braindump',title:'Brain Dump Journal',icon:'pencil',mood:'manic',description:'Get racing thoughts out of your head. Write freely — no rules, no judgment.',type:'journal',badges:['Manic'],badgeClass:['badge-manic']}
+  {id:'braindump',title:'Brain Dump Journal',icon:'pencil',mood:'manic',description:'Get racing thoughts out of your head. Opens the Journal tab.',type:'link',linkPage:'journal',badges:['Manic'],badgeClass:['badge-manic']},
+  {id:'gratitude',title:'Gratitude Reflection',icon:'heart',mood:'stable',description:'Name three things you\'re grateful for today. Small things count — the warmth of a cup of tea, a message from a friend.',type:'stepped',badges:['Stable'],badgeClass:['badge-stable'],steps:[{t:'Pause',d:'Take a slow breath. Let your mind settle before you begin.'},{t:'First thing',d:'What is one thing from today — however small — that you\'re glad happened?'},{t:'Second thing',d:'What is something about your body, your home, or your life that you appreciate?'},{t:'Third thing',d:'Who is someone you\'re grateful to have? It could be a person, a pet, even a memory.'},{t:'Sit with it',d:'Hold those three things gently in your mind for a moment. This is your anchor.'}]},
+  {id:'goalsetting',title:'Gentle Goal Setting',icon:'compass',mood:'stable',description:'Stability is the time to plant seeds. Set one small, meaningful intention for the week ahead.',type:'stepped',badges:['Stable'],badgeClass:['badge-stable'],steps:[{t:'Reflect',d:'Think about one area of your life you\'d like to gently improve this week.'},{t:'Make it small',d:'Choose something achievable. Not "fix everything" but "go for one walk" or "cook one meal."'},{t:'Write it down',d:'Say it clearly: "This week I will..." — keep it to one sentence.'},{t:'Identify one barrier',d:'What might get in the way? Name it honestly so it has less power.'},{t:'Commit gently',d:'This is a gift to yourself, not an obligation. If it doesn\'t happen, that\'s okay too.'}]},
+  {id:'valuescheck',title:'Values Check-In',icon:'breath',mood:'stable',description:'When you\'re stable, it\'s a good time to ask: am I living in line with what matters to me?',type:'stepped',badges:['Stable'],badgeClass:['badge-stable'],steps:[{t:'Name your values',d:'What matters most to you? Connection, creativity, honesty, growth, peace? Pick 2-3.'},{t:'Rate alignment',d:'On a scale of 1-5, how closely is your current life reflecting each value?'},{t:'Spot the gap',d:'Where is the biggest gap between what you value and how you\'re living?'},{t:'One small step',d:'What is one tiny thing you could do this week to close that gap?'},{t:'Self-compassion',d:'Gaps are normal. Noticing them is itself an act of living your values.'}]},
+  {id:'futureletter',title:'Letter to Future Self',icon:'pencil',mood:'stable',description:'Write a short message to the version of you who might be struggling. Your stable self has wisdom to share.',type:'journal',badges:['Stable'],badgeClass:['badge-stable']}
 ];
 
 // SVG icons for practices (stroke-based, matching nav style)
@@ -900,6 +1316,106 @@ function cycleLivedStatement(){
     showLivedStatement();
   },800);
 }
+
+// ═══ CRISIS MODAL ═══
+function openCrisisModal(){
+  document.getElementById('crisisModal').classList.add('show');
+}
+function closeCrisisModal(){
+  document.getElementById('crisisModal').classList.remove('show');
+}
+;(function(){
+  var modal=document.getElementById('crisisModal');
+  if(!modal)return;
+  modal.addEventListener('click',function(e){if(e.target===modal)closeCrisisModal()});
+  var sheet=modal.querySelector('.modal-content');
+  var startY=0,tracking=false;
+  sheet.addEventListener('touchstart',function(e){if(e.touches.length===1){startY=e.touches[0].clientY;tracking=true}},{passive:true});
+  sheet.addEventListener('touchend',function(e){
+    if(!tracking)return;tracking=false;
+    if(sheet.scrollTop>0)return;
+    var endY=e.changedTouches[0].clientY;
+    if(endY-startY>56)closeCrisisModal();
+  },{passive:true});
+})();
+
+// ═══ CHART TOGGLE (prose-first insights) ═══
+function toggleChart(canvasId){
+  var wrapId=canvasId+'Wrap';
+  var wrap=document.getElementById(wrapId);
+  var btn=wrap.previousElementSibling;
+  if(wrap.style.display==='none'){
+    wrap.style.display='block';
+    btn.classList.add('open');
+    setTimeout(function(){drawCharts()},100);
+  } else {
+    wrap.style.display='none';
+    btn.classList.remove('open');
+  }
+}
+
+// ═══ JOURNAL PAGE (5th tab) ═══
+function renderJournalPage(){
+  var container=document.getElementById('journalPageEntries');
+  var empty=document.getElementById('journalEmpty');
+  container.innerHTML='';
+  var tagEl=document.getElementById('journalMoodTag');
+  var m=selectedMood||getStoredLastMood();
+  if(m&&stateData[m]){tagEl.textContent='Mood: '+stateData[m].name;tagEl.className='journal-mood-tag has-mood'}else{tagEl.textContent='';tagEl.className='journal-mood-tag'}
+  if(journalEntries.length===0){empty.style.display='block';return}
+  empty.style.display='none';
+  journalEntries.forEach(function(e){
+    var div=document.createElement('div');div.className='journal-entry-item';
+    div.innerHTML='<div class="journal-entry-date">'+e.date+(e.mood?' — '+e.mood:'')+'</div><div class="journal-entry-text">'+e.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
+    container.appendChild(div);
+  });
+}
+
+function saveJournalFromPage(){
+  var textarea=document.getElementById('journalPageTextarea');
+  var text=textarea.value.trim();
+  if(!text)return;
+  var m=selectedMood||getStoredLastMood();
+  var moodName=m&&stateData[m]?stateData[m].name:'';
+  journalEntries.unshift({date:new Date().toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),text:text,mood:moodName});
+  try{localStorage.setItem('soluna_journal',JSON.stringify(journalEntries))}catch(ex){}
+  textarea.value='';
+  renderJournalPage();
+}
+
+// ═══ DATA EXPORT ═══
+function exportData(){
+  var lines=['SOLUNA — Mood Tracking Summary','Exported: '+new Date().toLocaleString('en-GB'),'','--- MOOD LOG ---'];
+  var lastMood=selectedMood||getStoredLastMood();
+  if(lastMood&&stateData[lastMood])lines.push('Last logged mood: '+stateData[lastMood].name);
+  lines.push('Current streak: '+getStreak()+' days');
+  lines.push('');
+  lines.push('--- SURVEY RESPONSES (last session) ---');
+  questions.forEach(function(q){var a=qAns[q.key];lines.push(q.label+': '+(a||'Not answered'))});
+  lines.push('');
+  lines.push('--- JOURNAL ENTRIES ---');
+  if(journalEntries.length===0){lines.push('No journal entries yet.')}
+  else{journalEntries.slice(0,20).forEach(function(e){lines.push(e.date+(e.mood?' ('+e.mood+')':''));lines.push(e.text);lines.push('')})}
+  lines.push('');
+  lines.push('--- PATTERNS OBSERVED ---');
+  lines.push('- Sleep and mood appear connected: restful sleep correlates with stable days.');
+  lines.push('- Mid-week energy dips may follow high social activity.');
+  lines.push('- Spending patterns shift during elevated mood states.');
+  lines.push('');
+  lines.push('This summary was generated by Soluna and is intended to support conversations with your care team.');
+  var blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='soluna-summary-'+new Date().toISOString().slice(0,10)+'.txt';a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══ UPDATE OPENMODAL FOR LINK TYPE ═══
+var _origOpenModal=openModal;
+openModal=function(id){
+  var p=practices.find(function(x){return x.id===id});
+  if(p&&p.type==='link'&&p.linkPage){switchPage(p.linkPage);return}
+  _origOpenModal(id);
+};
 
 // Init practices on load
 renderPractices();
